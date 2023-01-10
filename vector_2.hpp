@@ -144,7 +144,7 @@ namespace ft
 			{
 				m_Capacity += 1; // *= 2;
 				value_type	*tmp; //T *tmp;
-				tmp = m_alloc.allocate(m_Capacity); //a verifier le doublement 
+				tmp = m_alloc.allocate(m_Capacity /* *2 */); //a verifier le doublement 
 				size_t i(0);
 				while(i < m_Size)
 				{
