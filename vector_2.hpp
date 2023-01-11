@@ -54,7 +54,7 @@ namespace ft
 
 		typename Alloc::size_type	max_size()	const
 		{
-			return std::min(std::numeric_limits<typename Alloc::difference_type >::max(), m_alloc.max_size);
+			return std::min(std::numeric_limits<typename Alloc::size_type >::max(), m_alloc.max_size());
 		}
 		/* fonction membr
 		*/
@@ -173,12 +173,18 @@ namespace ft
 			}
 			m_Size = 0;
 		}
-		/*
+
 		void		swap(vector& x)
 		{
-			value_type *tmp;
+			allocator_type *tmp_allocator;
+			value_type *tmp,
 
-		}*/
+			x.size() = mem.size();
+			tmp = mem;
+			mem = x.mem;
+			x.mem = tmp;
+			// swap m_Size, m_Capacity et m_alloc
+		}
 
 // [4, 5, 7, 9, 6]
 // resize(7 > capacity, 10)
