@@ -3,6 +3,7 @@
 namespace ft
 {
     // iterator_vector<T> -> T
+
 	template<class T>
 	class iterator_vector
 	{
@@ -68,6 +69,10 @@ namespace ft
 			return iterator_vector<T>(this->_pointer - b);
 		}
 
+		typename ft::iterator_traits<T>::value_type operator*()
+		{
+			return *this->_pointer; //dereferencer le pointeur
+		}
 
 		T pointer()
 		{
