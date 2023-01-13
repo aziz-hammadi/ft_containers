@@ -36,28 +36,51 @@ namespace ft
 		typedef typename	ft::vector_iterator<const_value_type> const_iterator;
 		typedef	typename	ft::reverse_iterator<iterator> reverse iterator;
 		typedef	typename	ft::reverse_iterator<const_iterator> const reverse iterator;*/
-		typedef	Alloc			allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
-		typedef	std::size_t		size_type;
-		typedef ft::iterator_vector<T *> iterator;
-		typedef ft::iterator_vector<const T *> const_iterator;
-		typedef	typename	Alloc::pointer	pointer;
-
+		typedef	Alloc							allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
+		typedef	std::size_t						size_type;
+		typedef ft::iterator_vector<T *>		iterator;
+		typedef ft::iterator_vector<const T *>	const_iterator;
+		typedef	typename Alloc::pointer			pointer;
+		typedef typename Alloc::difference_type difference_type;
+		
 		vector() : mem(NULL), m_Size(0), m_Capacity(0)
 		{
 			//std::cout << "constructeur" << std::endl;
+		}
+
+		vector (size_type n, const value_type &val = value_type()/*, const allocator_type &alloc = allocator_type())*/)
+			: m_Size(n), m_Capacity(n)
+		{
+			mem = m_alloc.allocate(n); // -> [0, 0, 0, 0, 0]
+			for (size_type i = 0; i < n; ++i)
+			{
+				m_alloc.construct(mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
+			}
+		}
+
+		template <class InputIterator>
+		vector(InputIterator first, InputIterator last)
+			: m_Size(last - first), m_Capacity(last - first)
+		{
+			mem = m_alloc.allocate(m_Size); // -> [0, 0, 0, 0, 0] mem de taille m_size, allocation, mais valeur non initialisé
+			for (size_t i = 0; first != last; ++i, ++first)
+			{
+				m_alloc.construct(mem + i, *first); // initialise (construit) chaque élement on associe une valeur		
+ 			} 
 		}
 
 		//ici destructeur
 		~vector()
 		{
 			clear();
-			m_alloc.deallocate(mem, m_Capacity);
+			if (mem != NULL)
+				m_alloc.deallocate(mem, m_Capacity);
 			//deallocate mem[]
 		}
 
 		typename Alloc::size_type	max_size()	const
 		{
-			return std::min(std::numeric_limits<typename Alloc::size_type>::max(), m_alloc.max_size());
+			return std::min<size_type>(std::numeric_limits<difference_type>::max(), m_alloc.max_size());
 		}
 		/* fonction membr
 		*/
@@ -196,11 +219,49 @@ namespace ft
 // [4, 5, 7, 9, 6]
 // resize(7 > capacity, 10)
 // [4, 5, 7, 10, 10] == pop_back 
-/*
-		void resize (size_type n, value_type val = value_type());
+
+		void resize (size_type n, value_type val = value_type())
 		{
+			// n = 8 size = 5 5 + (8 - 5 )
+			// si n < size 
+			// conteneur reduit à n 
+			// si n > size 
+			// size + (n-size)
+			// si n > capacity 
+			// reallocation
+
+			if (n < m_Size)
+			{
+				size_type i = n;
+				while(i < m_Size)
+				{
+					m_alloc.destroy(mem + i); //&mem[i]
+					i++;
+				}
+				m_Size = n;
+			}
+			else if (n > m_Capacity)
+			{
+				value_type  *tmp;
+				tmp = m_alloc.allocate(n * 2);
+				size_type i(0);
+				while(i < m_Size)
+				{
+					m_alloc.construct(tmp + i, mem[i]);
+					m_alloc.destroy(mem + i);
+					i++;
+				}
 			
-		}*/
+				mem = m_alloc.allocate(m_Capacity - n);
+				m_Capacity = n;
+				while ( m_Size < m_Capacity)
+				{
+					mem[m_Size]= val;
+					m_Size++;
+				}
+				m_Size = n;
+			}
+		}
 		//retourne la taille max 
 				/*//:::::::::::CAPACITY:::::::::::\\*/
 
@@ -287,6 +348,13 @@ namespace ft
 		//pour construire un objet/detruire
 		//avec .construct/destroy
 	};
+	
+	template <class T, class Alloc>
+	void	swap(ft::vector<T, Alloc> &vec_1, ft::vector<T, Alloc> &vec_2)
+	{
+		vec_1.swap(vec_2);
+	}
+
 }
 
 #endif

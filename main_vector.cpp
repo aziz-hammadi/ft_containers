@@ -26,8 +26,19 @@ public:
 
 int main()
 {
-    std::vector<Test> t;
-    t.push_back(Test());
+    std::vector<int> t;
+    t.push_back(4);
+    t.push_back(3);
+    t.push_back(2);
+    t.push_back(1);
+
+    t.resize(2, 7);
+
+    for (size_t i = 0; i < t.size(); ++i)
+        std::cout << t[i] << std::endl;
+
+    // std::vector<Test> t;
+    // t.push_back(Test());
     // t.push_back(Test());
     // t.push_back(Test());
 
@@ -35,7 +46,7 @@ int main()
     // vvec.push_back(Test());
     // vvec.push_back(Test());
     // vvec.push_back(Test());
-    std::cout << "END" << std::endl;
+    // std::cout << "END" << std::endl;
     return 0;
     // Test t;
     // std::cout << "[" << t.a << ", " << t.b << ", " << t.c << "]" << std::endl;
