@@ -4,24 +4,22 @@
 #include <locale>
 #include <vector>
 
-class Test
+class Json
 {
 public:
-    Test()
+    Json(std::string filename)
     {
-        std::cout << "START " << this << std::endl;
+        std::ifstream fs(filename);
+
+        fs.getlin()
     }
 
-    Test(const Test &t)
-    {
-        (void)t;
-        std::cout << "START COPY " << this << std::endl;
-    }
-
-    ~Test()
+    ~Json()
     {
         std::cout << "FINISH " << this << std::endl;
     }
+
+    int _matrix[][];
 };
 
 int main()
