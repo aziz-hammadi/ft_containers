@@ -1,5 +1,5 @@
-#ifndef VECTOR_2_HPP
-#define VECTOR_2_HPP
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
 
 #include <memory>
 #include <cstddef>
@@ -210,9 +210,29 @@ void		insert(iterator position, size_type n, const value_type &val)
 	mem = tmp;
 }
 
-template <class InputIterator> void insert( iterator position, InputIterator first, InputIterator last)
+template <class InputIterator> 
+void insert( iterator position, InputIterator first, InputIterator last)
 {
+	value_type *tmp;
+	tmp = m_alloc.allocate(m_Capacity * 2);
+	tmp.m_Size = m_Size + 3;
+	while ( position < men.end)
+	{
+		m_alloc.construct(tmp[men.end], mem[men.end]);
+		--men.end;
+	}
 
+		tmp[position] = last;
+		--position;
+		tmp[position] = first;
+
+	while (mem.begin < position)
+	{
+		m_alloc.construct(tmp[men.end], mem[men.end]);
+		--mem.end;
+	}
+	m_alloc.deallocate(mem, m_Capacity);
+	mem = tmp;
 }
 /*
 		iterator 	insert(iterator position, const value_type& val)
