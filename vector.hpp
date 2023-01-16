@@ -171,16 +171,16 @@ iterator	insert(iterator position, const value_type &val)
 	value_type *tmp;
 	tmp = m_alloc.allocate(m_Capacity * 2);
 	tmp.m_Size = m_Size + 1;
-	while ( position < men.end)
+	while ( position < men.end())
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--men.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--men.end();
 	}
 	tmp[position] = val;
 	while (mem.begin < position)
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--mem.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--mem.end();
 	}
 	m_alloc.deallocate(mem, m_Capacity);
 	mem = tmp;
@@ -193,8 +193,8 @@ void		insert(iterator position, size_type n, const value_type &val)
 	tmp.m_Size = m_Size + 1;
 	while ( position < men.end)
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--men.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--men.end();
 	}
 	while ( 0 < n)
 	{
@@ -203,8 +203,8 @@ void		insert(iterator position, size_type n, const value_type &val)
 	}
 	while (mem.begin < position)
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--mem.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--mem.end();
 	}
 	m_alloc.deallocate(mem, m_Capacity);
 	mem = tmp;
@@ -215,11 +215,11 @@ void insert( iterator position, InputIterator first, InputIterator last)
 {
 	value_type *tmp;
 	tmp = m_alloc.allocate(m_Capacity * 2);
-	tmp.m_Size = m_Size + 3;
-	while ( position < men.end)
+	tmp.m_Size = m_Size + 2;
+	while ( position < men.end())
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--men.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--men.end();
 	}
 
 		tmp[position] = last;
@@ -228,8 +228,8 @@ void insert( iterator position, InputIterator first, InputIterator last)
 
 	while (mem.begin < position)
 	{
-		m_alloc.construct(tmp[men.end], mem[men.end]);
-		--mem.end;
+		m_alloc.construct(tmp[men.end()], mem[men.end()]);
+		--mem.end();
 	}
 	m_alloc.deallocate(mem, m_Capacity);
 	mem = tmp;
