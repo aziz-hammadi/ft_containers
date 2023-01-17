@@ -1,4 +1,6 @@
-#ifndef STACK_HPP
-#define STACK_HPP
+#ifndef __STACK_HPP__
+# define __STACK_HPP__
+
+# include "vector.hpp"
 
 #endif

@@ -1,14 +1,14 @@
-#ifndef VECTOR_HPP
-#define VECTOR_HPP
+#ifndef __VECTOR_HPP__
+# define __VECTOR_HPP__
 
-#include <memory>
-#include <cstddef>
-#include <iterator>
-#include <algorithm>
-#include <iostream>
-#include <limits>
-#include <vector>
-#include "iterator_vector.hpp"
+# include <cstddef>
+# include <memory>
+# include <iterator>
+# include <algorithm>
+# include <iostream>
+# include <limits>
+# include <vector>
+# include "iterator_vector.hpp"
 //faire insert et delete max size /OK! (return ) (element acces) front back data (capacity) empty size//OK max_size (modifier)//Ok pop_back//ok void pop_back 
 //element acces, tout element acces 
 //insert c compliquer penser a iterator
@@ -79,6 +79,16 @@ namespace ft
 
 		/* fonction membr
 		*/
+		void assign (size_type n, const value_type& val)
+		{
+			//ajoute n fois la val a la fin
+		}
+
+		template <class InputIterator>
+		void assign (InputIterator first, InputIterator last)
+		{
+				//ajoute un first et un last a la fin 
+		}
 						/*//:::::::::::ITERATOR:::::::::::\\*/
 		iterator begin()
 		{
@@ -151,14 +161,6 @@ namespace ft
 		const_reference back() const
 		{
 			return (*(this->end() - 1));
-		}
-		value_type*		data() noexcept
-		{
-			return (this->mem);
-		}
-		const value_type* data() const noexcept
-		{
-			return (this->mem);
 		}
 		/*
 		abcdef -> push_back(X) -> abcdef_ -> abcdefX
