@@ -82,7 +82,7 @@ namespace ft
 	private :
 		T	_pointer;
 	};
-}
+
 	template<class T>
 	class iterator_vector
 	{
@@ -138,6 +138,11 @@ namespace ft
 		bool operator<=(const iterator_vector<T> &b)
 		{
 			return !(this->operator>=(b));
+		}
+
+		difference_type operator-(const iterator_vector<T> &b)
+		{
+			return this->_pointer - b._pointer;
 		}
 
 		iterator_vector<T> operator+(const difference_type &b)
