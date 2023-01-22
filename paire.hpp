@@ -6,8 +6,9 @@ namespace ft
     template <typename T1, typename T2>
     class pair {
     public:
-        T1 first;
-        T2 second;
+
+        typedef T1 first;
+        typedef T2 second;
 
         // constructeur par défaut
         //init les valeurs 
