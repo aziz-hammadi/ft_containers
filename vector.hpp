@@ -242,7 +242,7 @@ namespace ft
 		{
 			size_type n = last - first;
 			difference_type distance = position - this->begin();
-			this_>resize(_size + n);
+			this->resize(_size + n);
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
 			while(it > (new_position + (n - 1)))
@@ -252,12 +252,13 @@ namespace ft
 			}
 			while (n > 0)
 			{
-				_alloc.construc(it.pointer(), last);
+				_alloc.construct(it.pointer(), last);
 				--n;
 				--it;
 				--last;
 			}
-			
+	//verifier si mes input sont true avec is integral 	si true insert avec size_t
+	//sans --last et --first	
 
 
 /*
