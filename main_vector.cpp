@@ -120,5 +120,13 @@ int main()
 //     std::cout << vec2[0] << std::endl;
 //     std::cout << vec2[1] << std::endl;
 //     std::cout << vec2[2] << std::endl;
-    
+
+/*reverse it
+std::vector<int> vec { 1, 2, 3, 4, 5 };
+std::reverse_iterator<std::vector<int>::iterator> rit(vec.end());
+std::reverse_iterator<std::vector<int>::iterator> rend(vec.begin());
+for (; rit != rend; ++rit) {
+    std::cout << *rit << " ";
+}
+*/
 }

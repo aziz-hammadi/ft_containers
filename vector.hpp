@@ -197,9 +197,8 @@ namespace ft
 			// [4, 5, 6, 7, 8]
 			// insert 1, n=2, 3
 			// [4, 5, 4, 5, 6, 7, 8]
-
 			difference_type distance = position - this->begin();
-			this->resize(_size + n);
+			this_>resize(_size + n);
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
 			while(it > (new_position + (n - 1)))
