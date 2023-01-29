@@ -4,7 +4,8 @@
 namespace ft
 {
     template <typename T1, typename T2>
-    class pair {
+    class pair 
+    {
     public:
 
         typedef T1 first;
@@ -34,8 +35,7 @@ namespace ft
 
         //stocke deux valeurs de n'importe quel type
 
-};
-
+    };
 }
 
 #endif
