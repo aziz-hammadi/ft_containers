@@ -45,7 +45,10 @@ namespace ft
 	bool operator>( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ) {return (rhs < lhs);}
 	template< class T1, class T2 >
 	bool operator>=( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ) {return (!(lhs < rhs));}
-    template <typename T1, typename T2>
+    
+	
+	//SUIVANT
+	template <typename T1, typename T2>
     class pair 
     {
     public:
