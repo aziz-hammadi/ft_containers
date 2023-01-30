@@ -40,7 +40,7 @@ struct Hello<false>
 
 int main()
 {
-    Hello<false>::type a;
+    
 
     // std::vector<Test> t;
     // t.push_back(Test());

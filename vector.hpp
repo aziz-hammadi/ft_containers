@@ -9,6 +9,8 @@
 # include <limits>
 # include <vector>
 # include "iterator_vector.hpp"
+# include "enable_if.hpp"
+# include "is_integral.hpp"
 //faire insert et delete max size /OK! (return ) (element acces) front back data (capacity) empty size//OK max_size (modifier)//Ok pop_back//ok void pop_back 
 //element acces, tout element acces 
 //insert c compliquer penser a iterator
@@ -31,42 +33,49 @@ namespace ft
 		typedef	typename	std::size_t		size_type;  peut etre
 		typedef	typename	ft::vector_iterator<value_type>	iterator;
 		typedef typename	ft::vector_iterator<const_value_type> const_iterator;*/
+		typedef ft::iterator_vector<T *>		iterator;
+		typedef ft::iterator_vector<const T *>	const_iterator;
 		typedef	typename	Alloc::reference reference;
 		typedef	typename	Alloc::const_reference const_reference;
 		typedef	typename	ft::reverse_iterator<iterator> reverse_iterator;
 		typedef	typename	ft::reverse_iterator<const_iterator> const_reverse_iterator;
 		typedef	Alloc							allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
 		typedef	std::size_t						size_type;
-		typedef ft::iterator_vector<T *>		iterator;
-		typedef ft::iterator_vector<const T *>	const_iterator;
 		typedef	typename Alloc::pointer			pointer;
 		typedef typename Alloc::difference_type difference_type;
 		
-		vector() : mem(NULL), _size(0), _capacity(0)
+		vector(const allocator_type &alloc = allocator_type())
+			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
 			//std::cout << "constructeur" << std::endl;
 		}
 
-		vector (size_type n, const value_type &val = value_type()/*, const allocator_type &alloc = allocator_type())*/)
-			: mem(NULL)
+		vector (size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
+			: _mem(NULL), _alloc(alloc)
 		{
 			this->assign(n, val);
 		}
 
 		template <class InputIterator>
-		vector(InputIterator first, InputIterator last)
-			: mem(NULL)
+		vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type &alloc = allocator_type())
+			: _mem(NULL), _alloc(alloc)
 		{
 			this->assign(first, last);
+		}
+	
+		//constructeur par copy 
+		vector(const ft::vector<T>& x)
+		{
+			assign(x.begin(), x.end());
 		}
 
 		//ici destructeur
 		~vector()
 		{
 			clear();
-			if (mem != NULL)
-				_alloc.deallocate(mem, _capacity);
-			//deallocate mem[]
+			if (_mem != NULL)
+				_alloc.deallocate(_mem, _capacity);
+			//deallocate _mem[]
 		}
 
 		/* fonction membr
@@ -74,42 +83,43 @@ namespace ft
 		void assign (size_type n, const value_type& val)
 		{
 			//ajoute n fois la val
-			this->resize(n)
+			this->resize(n);
 			for (size_type i = 0; i < n; ++i)
 			{
-				_alloc.construct(mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
+				_alloc.construct(_mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
 			}
 		}
-
+		
 		template <class InputIterator>
-		void assign (InputIterator first, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type last)
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type
+		assign (InputIterator first, InputIterator last) //sur le type de retour
 		{
 				//ajoute un first et un last a la fin
-			this->resize(last - first); // -> [0, 0, 0, 0, 0] mem de taille _size, allocation, mais valeur non initialisé
+			this->resize(last - first); // -> [0, 0, 0, 0, 0] _mem de taille _size, allocation, mais valeur non initialisé
 			for (size_t i = 0; first != last; ++i, ++first)
 			{
-				_alloc.construct(mem + i, *first); // initialise (construit) chaque élement on associe une valeur		
+				_alloc.construct(_mem + i, *first); // initialise (construit) chaque élement on associe une valeur		
  			} 
 		}
 						/*//:::::::::::ITERATOR:::::::::::\\*/
 		iterator begin()
 		{
-			return (iterator(this->mem));
+			return (iterator(this->_mem));
 		}
 
 		const_iterator begin() const
 		{
-			return (const_iterator(this->mem));
+			return (const_iterator(this->_mem));
 		}
 
 		iterator end()
 		{
-			return (iterator(this->mem + _size));
+			return (iterator(this->_mem + _size));
 		}
 
 		const_iterator end() const
 		{
-			return (const_iterator(this->mem + _size));
+			return (const_iterator(this->_mem + _size));
 		}
 
 		reverse_iterator	rbegin()
@@ -138,13 +148,13 @@ namespace ft
 		{
 			if (n > _size)
 				throw std::out_of_range("ft::vector at out of range");
-			return (mem[n]);
+			return (_mem[n]);
 		}
 		const_reference	at(size_type n)	const
 		{
 			if (n > _size)
 				throw std::out_of_range("ft::vector at out of range");
-			return (mem[n]);
+			return (_mem[n]);
 		}
 		reference		front()
 		{
@@ -170,6 +180,8 @@ namespace ft
 		*/
 
 						/*//:::::::::::MODIFIERS:::::::::::\\*/
+						//le vrai
+						/*
 		int			it_become_pos(iterator position)
 		{
 			int posi = 0;
@@ -182,7 +194,7 @@ namespace ft
 			return (posi);
 		}
 
-		void insert (iterator position, size_type n, const value_type& val)
+		----void insert (iterator position, size_type n, const value_type& val)
 		{
 		size_type newSize = n + this->_size;
 			if (newSize > this->_capacity)
@@ -231,9 +243,8 @@ namespace ft
 			}
 			this->_size = newSize;
 		}
-
-		template <class InputIterator>
-		void insert (iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value , InputIterator>::type last)
+				template <class InputIterator>
+		----void insert (iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value , InputIterator>::type last)
 		{
 			//si pas integral rentre ici
 			int pos = it_become_pos(position);
@@ -243,13 +254,12 @@ namespace ft
 				pos++;
 			}
 		}
-
-		iterator	insert(iterator position, const value_type &val)
+		----iterator	insert(iterator position, const value_type &val)
 		{
 			int posi = it_become_pos(position);
-			this->insert(position, 1, val)
+			this->insert(position, 1, val);
 			return (this->begin()+posi);
-			/*
+			
 			// recuperer la distance entre le début du tableau et la position d'insertion
 			difference_type distance = positon - this->begin();
 			// on redimensionne le tab avec la taille actuelle + 1
@@ -265,8 +275,28 @@ namespace ft
 				--it;
 			}
 			//insertion de element
-			_alloc.construct(it.pointer(), val);*/
+			_alloc.construct(it.pointer(), val);
 
+		}
+		*/
+		//le faux
+		int			it_become_pos(iterator position)
+		{
+			int posi = 0;
+			ft::vector<T, allocator_type>::iterator iterator = this->begin();
+			while (iterator != position)
+			{
+				posi++;
+				iterator++;
+			}
+			return (posi);
+		}
+
+		iterator	insert(iterator position, const value_type &val)
+		{
+			int posi = it_become_pos(position);
+			this->insert(position, 1, val);
+			return (this->begin()+posi);
 		}
 
 		void		insert(iterator position, size_type n, const value_type &val)
@@ -283,6 +313,7 @@ namespace ft
 				*it = it - n;
 				--it;
 			}
+
 			while (n > 0)
 			{
 				_alloc.construc(it.pointer(), val);
@@ -296,7 +327,7 @@ namespace ft
 			tmp._size = _size + 1;
 			while ( position < men.end)
 			{
-				_alloc.construct(tmp[men.end()], mem[men.end()]);
+				_alloc.construct(tmp[men.end()], _mem[men.end()]);
 				--men.end();
 			}
 			while ( 0 < n)
@@ -304,19 +335,23 @@ namespace ft
 				tmp[position] = val;
 				--n;
 			}
-			while (mem.begin < position)
+			while (_mem.begin < position)
 			{
-				_alloc.construct(tmp[men.end()], mem[men.end()]);
-				--mem.end();
+				_alloc.construct(tmp[men.end()], _mem[men.end()]);
+				--_mem.end();
 			}
-			_alloc.deallocate(mem, _capacity);
-			mem = tmp;*/
+			_alloc.deallocate(_mem, _capacity);
+			_mem = tmp;*/
 		}
 
 		template <class InputIterator> 
-		void insert( iterator position, InputIterator first, InputIterator last)
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type
+		insert( iterator position, InputIterator first, InputIterator last)
 		{
-			size_type n = last - first;
+			size_type n = 0;
+			for (InputIterator it = first; it != last; ++it)
+				++n;
+
 			difference_type distance = position - this->begin();
 			this->resize(_size + n);
 			iterator new_position = this->begin() + distance;
@@ -326,13 +361,22 @@ namespace ft
 				*it = it - n;
 				--it;
 			}
-			while (n > 0)
+			size_type i = 0;
+			while (i < n)
 			{
-				_alloc.construct(it.pointer(), last);
-				--n;
-				--it;
-				--last;
+				_alloc.construct((it - n + i).pointer(), first);
+				++i;
+				// --it;
+				++first;
 			}
+		}
+			// while (n > 0)
+			// {
+			// 	_alloc.construct(it.pointer(), last);
+			// 	--n;
+			// 	--it;
+			// 	--last;
+			// }
 	//verifier si mes input sont true avec is integral 	si true insert avec size_t
 	//sans --last et --first	
 
@@ -343,7 +387,7 @@ namespace ft
 			tmp._size = _size + 2;
 			while ( position < men.end())
 			{
-				_alloc.construct(tmp[men.end()], mem[men.end()]);
+				_alloc.construct(tmp[men.end()], _mem[men.end()]);
 				--men.end();
 			}
 
@@ -351,14 +395,14 @@ namespace ft
 				--position;
 				tmp[position] = first;
 
-			while (mem.begin < position)
+			while (_mem.begin < position)
 			{
-				_alloc.construct(tmp[men.end()], mem[men.end()]);
-				--mem.end();
+				_alloc.construct(tmp[men.end()], _mem[men.end()]);
+				--_mem.end();
 			}
-			_alloc.deallocate(mem, _capacity);
-			mem = tmp;*/
-		}
+			_alloc.deallocate(_mem, _capacity);
+			_mem = tmp;*/
+
 /*
 		iterator 	insert(iterator position, const value_type& val)
 		{
@@ -377,7 +421,7 @@ namespace ft
 			// alloue tab temporaire avec taille actuelle _size + 1 -> [0, 0, 0, 0]
 			value_type *tmp = _alloc.allocate(_size + 1);
 
-			// copier tab actuelle (mem) jusqua position (2) dans tab temporaire -> [4, 15, 0, 0]
+			// copier tab actuelle (_mem) jusqua position (2) dans tab temporaire -> [4, 15, 0, 0]
 			for(iterator i = this->begin(); i < position; ++i)
 			{
 
@@ -391,12 +435,12 @@ namespace ft
 
 		iterator	erase(iterator position)
 		{
-			return (erase(positon, position + 1));
+			return (erase(position, position + 1));
 			/*copie de tmp [begin, positon - 1];
-			destroy mem[position] 
+			destroy _mem[position] 
 			copie de tmp_2 [positon +1 , end];
 			tmp : join tmp + tmp_2; 
-			mem = tmp;
+			_mem = tmp;
 			--_size;*/
 		}
 
@@ -405,6 +449,7 @@ namespace ft
 			// [4, 5, 6, 7, 8, 9]
 			// erase(this->begin() + 1, this->begin() + 3)
 			// [4, 8, 9]
+			iterator it = first;
 			while (first < last)
 			{
 				_alloc.destroy(first.pointer());
@@ -439,7 +484,7 @@ namespace ft
 				destroy first 
 				fist++ 
 			tmp : join tmp + tmp_2; 
-			mem = tmp;
+			_mem = tmp;
 			_size - [begin - last];
 		}
 */
@@ -457,7 +502,7 @@ namespace ft
 			if (_capacity == 0)
 			{
 				_capacity = 1;
-				mem = _alloc.allocate(_capacity);
+				_mem = _alloc.allocate(_capacity);
 			}
 			if (_size + 1 > _capacity)
 			{
@@ -466,19 +511,19 @@ namespace ft
 				size_t i(0);
 				while(i < _size)
 				{
-					_alloc.construct(tmp + i, mem[i]);
-					_alloc.destroy(mem + i);
+					_alloc.construct(tmp + i, _mem[i]);
+					_alloc.destroy(_mem + i);
 					i++;
 				}
 				_alloc.construct(tmp + i, value);
-				_alloc.deallocate(mem, _capacity);
+				_alloc.deallocate(_mem, _capacity);
 				_capacity *= 2; // *= 2;
-				mem = tmp;
+				_mem = tmp;
 			}
 			else 
 			{
-				_alloc.construct(mem + _size, value);
-				// mem[_size] = value;
+				_alloc.construct(_mem + _size, value);
+				// _mem[_size] = value;
 			}
 			_size++;
 		};
@@ -489,7 +534,7 @@ namespace ft
 
 			while (i < _size)
 			{
-				_alloc.destroy(mem + i);
+				_alloc.destroy(_mem + i);
 				i++; 
 			}
 			_size = 0;
@@ -499,10 +544,10 @@ namespace ft
 		{
 			size_type	tmp_capacity = _capacity;
 			size_type	tmp_size = _size;
-			pointer	tmp =	mem;
+			pointer	tmp =	_mem;
 
-			mem = x.mem;
-			x.mem = tmp;
+			_mem = x._mem;
+			x._mem = tmp;
 			_size = x._size;
 			x._size = tmp_size;
 			_capacity = x._capacity;
@@ -534,7 +579,7 @@ namespace ft
 				size_type i = n;
 				while(i < _size)
 				{
-					_alloc.destroy(mem + i); //&mem[i]
+					_alloc.destroy(_mem + i); //&_mem[i]
 					i++;
 				}
 				_size = n;
@@ -550,7 +595,7 @@ namespace ft
 			{
 				while (_size < n)
 				{
-					_alloc.construct(mem + i, val);
+					_alloc.construct(_mem + _size, val);
 					++_size;
 				}
 			}
@@ -561,8 +606,8 @@ namespace ft
 				size_type i(0);
 				while (i < _size)
 				{
-					_alloc.construct(tmp + i, mem[i]);
-					_alloc.destroy(mem + i);
+					_alloc.construct(tmp + i, _mem[i]);
+					_alloc.destroy(_mem + i);
 					++i;
 				}
 			
@@ -572,7 +617,7 @@ namespace ft
 					++_size;
 				}
 				_capacity = n * 2;
-				mem = tmp;
+				_mem = tmp;
 			}
 		}
 		//retourne la taille max 
@@ -601,7 +646,7 @@ namespace ft
 		void		reserve(size_type new_cap)
 		{
 			// _alloc.allocate(new_cap) -> nouveau tableau de taille new_cap
-			// mem -> ancien tableau
+			// _mem -> ancien tableau
 			// push_back 45
 			// push_back 21
 			// push_back 78
@@ -609,41 +654,41 @@ namespace ft
 			// reserve 10
 			// [45, 21, 78, 0, 0, 0, 0, 0, 0, 0]
 			// nouveau allocate -> [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-			// mem -> 
+			// _mem -> 
 
 			if (new_cap > _capacity)
 			{
 				value_type *tmp;
 				_alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
-				this->mem; // <- tableau actuelle [45, 21, 78]
+				this->_mem; // <- tableau actuelle [45, 21, 78]
 				size_type i(0);
 				while ( i < _capacity)
 				{
-					tmp[i] = mem[i];
+					tmp[i] = _mem[i];
 					i++;
 				}
 			}
 		}
 		// new_cap > _capacity
-		// reallouer mem pour qu'il puisse contenir au moins new_cap
+		// reallouer _mem pour qu'il puisse contenir au moins new_cap
 		// new_cap < _capacity
 		// on fait rien...
 		//if new_cap < _capacity || new_cap == _capacity = capacity
-		//if new_cap > _capacity then capacity = new cap et réallouer mem new_cap
+		//if new_cap > _capacity then capacity = new cap et réallouer _mem new_cap
 	
-		reference operator[](size_type n)
+		reference operator[](const size_type &n)
 		{
-			return (mem[n]);
+			return (_mem[n]);
 		}
 
-		const_reference operator[](size_type n)
+		const_reference operator[](const size_type &n) const
 		{
-			return (mem[n]);
+			return (_mem[n]);
 		}
 
 	private:
-		//value_type		*mem;
-		T				*mem;
+		//value_type		*_mem;
+		T				*_mem;
 		//ptr pour garder en memoire la place alloues
 		//size_type		_size; valeur actuel
 		size_type		_size;

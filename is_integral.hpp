@@ -1,5 +1,5 @@
 #ifndef __IS_INTEGRAL_HPP__
-# define __IS_INTEGRAL_HPP
+# define __IS_INTEGRAL_HPP__
 
 namespace ft
 {
@@ -11,12 +11,6 @@ namespace ft
 
     template <>
     struct is_integral<int>
-    {
-        static const bool value = true;
-    };
-
-    template <>
-    struct is_integral<long long>
     {
         static const bool value = true;
     };
@@ -44,16 +38,7 @@ namespace ft
     {
         static const bool value = true;
     };
-    template <>
-    struct is_integral<char16_t>
-    {
-        static const bool value = true;
-    };
-    template <>
-    struct is_integral<char16_t>
-    {
-        static const bool value = true;
-    };
+
     template <>
     struct is_integral<wchar_t>
     {
@@ -69,11 +54,7 @@ namespace ft
     {
         static const bool value = true;
     };
-    template <>
-    struct is_integral<int>
-    {
-        static const bool value = true;
-    };
+
     template <>
     struct is_integral<long int>
     {
@@ -89,18 +70,26 @@ namespace ft
     {
         static const bool value = true;
     };
+
+    template <>
     struct is_integral<unsigned short int>
     {
         static const bool value = true;
     };
+
+    template <>
     struct is_integral<unsigned int>
     {
         static const bool value = true;
     };
+
+    template <>
     struct is_integral<unsigned long int>
     {
         static const bool value = true;
     };
+
+    template <>
     struct is_integral<unsigned long long int>
     {
         static const bool value = true;
