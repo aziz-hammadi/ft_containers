@@ -31,16 +31,16 @@ namespace ft
 		typedef	typename	std::size_t		size_type;  peut etre
 		typedef	typename	ft::vector_iterator<value_type>	iterator;
 		typedef typename	ft::vector_iterator<const_value_type> const_iterator;*/
-		typedef	typename	Alloc::reference reference;
-		typedef	typename	Alloc::const_reference const_reference;
-		typedef	typename	ft::reverse_iterator<iterator> reverse_iterator;
-		typedef	typename	ft::reverse_iterator<const_iterator> const_reverse_iterator;
-		typedef	Alloc							allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
-		typedef	std::size_t						size_type;
-		typedef ft::iterator_vector<T *>		iterator;
-		typedef ft::iterator_vector<const T *>	const_iterator;
-		typedef	typename Alloc::pointer			pointer;
-		typedef typename Alloc::difference_type difference_type;
+		typedef	typename	Alloc::reference 						reference;
+		typedef	typename	Alloc::const_reference 					const_reference;
+		typedef	typename	ft::reverse_iterator<iterator> 			reverse_iterator;
+		typedef	typename	ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef	Alloc												allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
+		typedef	std::size_t											size_type;
+		typedef ft::iterator_vector<T *>							iterator;
+		typedef ft::iterator_vector<const T *>						const_iterator;
+		typedef	typename Alloc::pointer								pointer;
+		typedef typename Alloc::difference_type 					difference_type;
 		
 		vector() : mem(NULL), _size(0), _capacity(0)
 		{
@@ -184,22 +184,22 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val)
 		{
-			if (count = 0)
+			if (n = 0)
 				return;
 			size_type x = 0;
-			size_type distf = std::distance(pos, end());
-			size_type distd = std::distance(begin(), pos);
-			if (count + _size > _capacity)
-				reserve(_size, count + _size);
-			for (reserve_iterator c = rbegin(); x < distf; x++)
+			size_type distf = std::distance(position, end());
+			size_type distd = std::distance(begin(), position);
+			if (n + _size > _capacity)
+				reserve(_size, n + _size);
+			for (reverse_iterator c = rbegin(); x < distf; x++)
 			{
-				_alloc.construct(_tab + std::distance(begin(), c.base() -  1) + count *c);
+				_alloc.construct(_tab + std::distance(begin(), c.base() -  1) + n *c);
 				_alloc.destroy((c.base() - 1).get_tab())
 				c++;
 			}
-			for (x = 0; x < count; x++)
-				_alloc.construct(_tab + distb + x, value);
-			_size = count + _size;
+			for (x = 0; x < n; x++)
+				_alloc.construct(_tab + distd + x, val);
+			_size = n + _size;
 		};
 
 		template <class InputIterator>
