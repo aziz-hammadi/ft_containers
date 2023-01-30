@@ -195,7 +195,7 @@ namespace ft
 			for (reverse_iterator c = rbegin(); x < distf; x++)
 			{
 				_alloc.construct(_tab + std::distance(begin(), c.base() -  1) + n *c);
-				_alloc.destroy((c.base() - 1).get_tab())
+				_alloc.destroy((c.base() - 1).get_tab());
 				c++;
 			}
 			for (x = 0; x < n; x++)
