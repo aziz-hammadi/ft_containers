@@ -184,7 +184,7 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val)
 		{
-			size_type newSize = n + this->_size;
+		size_type newSize = n + this->_size;
 			if (newSize > this->_capacity)
 			{
 				size_type newCap = this->_size == 0 ? 1 : this->_size * 2;
@@ -233,7 +233,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void insert (iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIt>::value , InputIt>::type last)
+		void insert (iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL)
 		{
 			//si pas integral rentre ici
 			int pos = it_become_pos(position);
