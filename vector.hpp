@@ -54,7 +54,7 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		vector(InputIterator first, InputIterator last)
+		vector(InputIterator first, InputIterator last) //a verifier 
 			: mem(NULL)
 		{
 			this->assign(first, last);
@@ -82,7 +82,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last)
+		void assign (InputIterator first, InputIterator last,
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* == NULL)
 		{
 				//ajoute un first et un last a la fin
 			this->resize(last - first); // -> [0, 0, 0, 0, 0] mem de taille _size, allocation, mais valeur non initialisé
