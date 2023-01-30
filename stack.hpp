@@ -83,4 +83,5 @@ namespace ft
 				return (x.c <= y.c);
 			}
 	};
-};
+}
+#endif

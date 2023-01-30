@@ -170,9 +170,56 @@ namespace ft
 		*/
 
 						/*//:::::::::::MODIFIERS:::::::::::\\*/
+		int			it_become_pos(iterator position)
+		{
+			int posi = 0;
+			ft::vector<T, Allocator>::iterator iterator = this->begin();
+			while (iterator != position)
+			{
+				posi++;
+				iterator++;
+			}
+			return (posi);
+		}
+
+		void insert (iterator position, size_type n, const value_type& val)
+		{
+			if (count = 0)
+				return;
+			size_type x = 0;
+			size_type distf = std::distance(pos, end());
+			size_type distd = std::distance(begin(), pos);
+			if (count + _size > _capacity)
+				reserve(_size, count + _size);
+			for (reserve_iterator c = rbegin(); x < distf; x++)
+			{
+				_alloc.construct(_tab + std::distance(begin(), c.base() -  1) + count *c);
+				_alloc.destroy((c.base() - 1).get_tab())
+				c++;
+			}
+			for (x = 0; x < count; x++)
+				_alloc.construct(_tab + distb + x, value);
+			_size = count + _size;
+		};
+
+		template <class InputIterator>
+		void insert (iterator position, InputIterator first, InputIterator last,
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL)
+		{
+			//si pas integral rentre ici
+			int pos = it_become_pos(position);
+			for (InputIterator it = first; it != last; it++)
+			{
+				insert(this->begin()+pos, 1, *it);
+				pos++;
+			}
+		}
+
 		iterator	insert(iterator position, const value_type &val)
 		{
-			return (insert(position, 1, val));
+			int posi = it_become_pos(position);
+			this->insert(position, 1, val)
+			return (this->begin()+posi);
 			/*
 			// recuperer la distance entre le début du tableau et la position d'insertion
 			difference_type distance = positon - this->begin();
@@ -190,6 +237,7 @@ namespace ft
 			}
 			//insertion de element
 			_alloc.construct(it.pointer(), val);*/
+
 		}
 
 		void		insert(iterator position, size_type n, const value_type &val)
@@ -197,7 +245,6 @@ namespace ft
 			// [4, 5, 6, 7, 8]
 			// insert 1, n=2, 3
 			// [4, 5, 4, 5, 6, 7, 8]
-
 			difference_type distance = position - this->begin();
 			this->resize(_size + n);
 			iterator new_position = this->begin() + distance;
