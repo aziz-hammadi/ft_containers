@@ -82,7 +82,7 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last)
+		void assign (InputIterator first, typename ft::enable_if<!ft::is_integral<InputIt>::value, InputIt>::type last)
 		{
 				//ajoute un first et un last a la fin
 			this->resize(last - first); // -> [0, 0, 0, 0, 0] mem de taille _size, allocation, mais valeur non initialisé
@@ -233,8 +233,7 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last,
-		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL)
+		void insert (iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value , InputIterator>::type last)
 		{
 			//si pas integral rentre ici
 			int pos = it_become_pos(position);
