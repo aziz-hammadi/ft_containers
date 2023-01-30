@@ -74,7 +74,7 @@ namespace ft
 		void assign (size_type n, const value_type& val)
 		{
 			//ajoute n fois la val
-			this->resize(n)
+			this->resize(n);
 			for (size_type i = 0; i < n; ++i)
 			{
 				_alloc.construct(mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
@@ -82,8 +82,7 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void assign (InputIterator first, InputIterator last,
-		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* == NULL)
+		void assign (InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last)
 		{
 				//ajoute un first et un last a la fin
 			this->resize(last - first); // -> [0, 0, 0, 0, 0] mem de taille _size, allocation, mais valeur non initialisé
@@ -185,6 +184,14 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val)
 		{
+			size_type NewSize = n + this->_size;
+			if (newSize > this-> _capacity)
+			{
+				size_type newCapacity = this->_size == 0 ? 1 : this->_size * 2;
+				if (newCapacity < NewSize)
+					newCapacity = NewSize;
+				T* newTab = this->
+			}
 			if (n = 0)
 				return;
 			size_type x = 0;
