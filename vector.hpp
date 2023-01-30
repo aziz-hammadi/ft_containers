@@ -184,27 +184,56 @@ namespace ft
 
 		void insert (iterator position, size_type n, const value_type& val)
 		{
-			if (count = 0)
-				return;
-			size_type x = 0;
-			size_type distf = std::distance(pos, end());
-			size_type distd = std::distance(begin(), pos);
-			if (count + _size > _capacity)
-				reserve(_size, count + _size);
-			for (reserve_iterator c = rbegin(); x < distf; x++)
+			size_type newSize = n + this->_size;
+			if (newSize > this->_capacity)
 			{
-				_alloc.construct(_tab + std::distance(begin(), c.base() -  1) + count *c);
-				_alloc.destroy((c.base() - 1).get_tab())
-				c++;
+				size_type newCap = this->_size == 0 ? 1 : this->_size * 2;
+				if (newCap < newSize)
+					newCap = newSize;
+				T* newArray = this->try_allocation(newCap);
+				unsigned int i = 0;
+				ft::vector<T, Allocator>::iterator it = this->begin();
+				for (; it != position; it++, i++)
+				{
+					this->_allocator_type.construct(newArray + i, *it);
+				}
+				for (unsigned int j = i + n; i < j; i++)
+				{
+					this->_allocator_type.construct(newArray + i, val);
+				}
+				for (; it != this->end(); it++, i++)
+				{
+					this->_allocator_type.construct(newArray + i, *it);
+				}
+				if (this->_array)
+					this->destroy_and_deallocate();
+				this->_array = newArray;
+				this->_capacity = newCap;
 			}
-			for (x = 0; x < count; x++)
-				_alloc.construct(_tab + distb + x, value);
-			_size = count + _size;
-		};
+			else
+			{
+				if (position == this->end())
+				{
+					for (unsigned int j = this->_size; j < newSize; j++)
+						this->_allocator_type.construct(this->_array + j, val);
+				}
+				else
+				{
+					ft::vector<T, Allocator>::iterator place = this->end() - 1;
+					for (; place >= position; place--)
+					{
+						this->_allocator_type.construct((place+n).base(), *place);
+						this->_allocator_type.destroy(place.base());
+					}
+					for (unsigned int i = 0; i < n; i++)
+						this->_allocator_type.construct((++place).base(), val);
+				}
+			}
+			this->_size = newSize;
+		}
 
 		template <class InputIterator>
-		void insert (iterator position, InputIterator first, InputIterator last,
-		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = NULL)
+		void insert (iterator position, InputIterator first, typename ft::enable_if<!ft::is_integral<InputIt>::value , InputIt>::type last)
 		{
 			//si pas integral rentre ici
 			int pos = it_become_pos(position);
