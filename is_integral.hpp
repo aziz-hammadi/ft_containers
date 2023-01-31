@@ -40,7 +40,7 @@ namespace ft
     {
         static const bool value = true;
     };
-    inutile car y a deja unsigned int
+    inutile car y a deja unsigned int char
 */
     template <>
     struct is_integral<wchar_t>
