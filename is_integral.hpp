@@ -1,6 +1,8 @@
 #ifndef __IS_INTEGRAL_HPP__
 # define __IS_INTEGRAL_HPP__
-
+// #include <uchar.h>
+// #include <bits/c++config.h>
+#include <uchar.h>
 namespace ft
 {
     template <class T>
@@ -26,7 +28,7 @@ namespace ft
     {
         static const bool value = true;
     };
-
+/*
     template <>
     struct is_integral<char16_t>
     {
@@ -38,7 +40,8 @@ namespace ft
     {
         static const bool value = true;
     };
-
+    inutile car y a deja unsigned int
+*/
     template <>
     struct is_integral<wchar_t>
     {

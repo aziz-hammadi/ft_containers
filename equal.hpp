@@ -27,7 +27,7 @@ namespace ft
 		while (first1 != last1)
 		{
 			if(!pred(*first1,*first2))
-				return false
+				return false;
 			++first1;++first2;
 		}
 		return true;
