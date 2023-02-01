@@ -7,7 +7,6 @@
 # include <algorithm>
 # include <iostream>
 # include <limits>
-# include <vector>
 # include "iterator_vector.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
@@ -77,6 +76,17 @@ namespace ft
 				_alloc.deallocate(_mem, _capacity);
 			//deallocate _mem[]
 		}
+
+		
+		/*
+		vector_iterator() : _ptr(NULL) {}
+
+		vector_iterator(vector_iterator const &copy) : _ptr(copy._ptr) {}
+
+		explicit vector_iterator(pointer const ptr) : _ptr(ptr) {}
+
+		~vector_iterator() {}*/
+
 
 		/* fonction membr
 		*/
@@ -292,31 +302,38 @@ namespace ft
 			return (posi);
 		}
 
-		iterator	insert(iterator position, const value_type &val)
+		// iterator	insert(iterator position, const value_type &val)
+		// {
+		// 	int posi = it_become_pos(position);
+		// 	this->insert(position, 1, val);
+		// 	return (this->begin()+posi);
+		// }
+
+		iterator insert(iterator position, const value_type &val)
 		{
-			int posi = it_become_pos(position);
+			difference_type distance = position - this->begin();
 			this->insert(position, 1, val);
-			return (this->begin()+posi);
+			return this->begin() + distance;
 		}
 
 		void		insert(iterator position, size_type n, const value_type &val)
 		{
 			// [4, 5, 6, 7, 8]
 			// insert 1, n=2, 3
-			// [4, 5, 4, 5, 6, 7, 8]
+			// [4, 5, 6, 7, 8, 3, 3]
 			difference_type distance = position - this->begin();
-			this->resize(_size + n);
+			this->impl_resize(_size + n, val, false);
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
-			while(it > (new_position + (n - 1)))
+			while (it > (new_position + (n - 1)))
 			{
-				*it = it - n;
-				--it;
+				*it = *(it - n);
+				--it; //on a definie operator -- donc c'est possible de le faire
 			}
 
 			while (n > 0)
 			{
-				_alloc.construc(it.pointer(), val);
+				_alloc.construct(it.pointer(), val);
 				--n;
 				--it;
 			}
@@ -353,7 +370,7 @@ namespace ft
 				++n;
 
 			difference_type distance = position - this->begin();
-			this->resize(_size + n);
+			this->impl_resize(_size + n, value_type(), false);
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
 			while(it > (new_position + (n - 1)))
@@ -361,6 +378,7 @@ namespace ft
 				*it = it - n;
 				--it;
 			}
+
 			size_type i = 0;
 			while (i < n)
 			{
@@ -553,10 +571,6 @@ namespace ft
 			_capacity = x._capacity;
 			x._capacity = tmp_capacity; 
 		}
-
-// [4, 5, 7, 9, 6]
-// resize(7 > capacity, 10)
-// [4, 5, 7, 10, 10] == pop_back 
 						/*//:::::::::::CAPACITY:::::::::::\\*/
 
 		typename Alloc::size_type	max_size()	const
@@ -564,16 +578,13 @@ namespace ft
 			return std::min<size_type>(std::numeric_limits<difference_type>::max(), _alloc.max_size());
 		}
 
-		void resize (size_type n, value_type val = value_type()) //a verifier
+		void resize(size_type n, const value_type &val = value_type())
 		{
-			// n = 8 size = 5 5 + (8 - 5 )
-			// si n < size 
-			// conteneur reduit à n 
-			// si n > size 
-			// size + (n-size)
-			// si n > capacity 
-			// reallocation
+			this->impl_resize(n, val, true);
+		}
 
+		void impl_resize(size_type n, const value_type &val, const bool &call_constructor) 
+		{
 			if (n < _size)
 			{
 				size_type i = n;
@@ -584,20 +595,12 @@ namespace ft
 				}
 				_size = n;
 			}
-			/*cas  size < n < capacity
-			reattribu size = n 			
-			attribue val n - size
-			plus val dans le tableau 
-			n >  capacity realloc  sinon
-			definie size = n 
-			val idem*/ 
 			else if (n > _size && n < _capacity)
 			{
-				while (_size < n)
-				{
-					_alloc.construct(_mem + _size, val);
-					++_size;
-				}
+				if (call_constructor)
+					while (_size < n)
+						_alloc.construct(_mem + _size++, val);
+				_size = n;
 			}
 			else /* (n > _size) && (n > _capacity)*/
 			{
@@ -610,12 +613,13 @@ namespace ft
 					_alloc.destroy(_mem + i);
 					++i;
 				}
-			
-				while (_size < n)
-				{	
-					_alloc.construct(tmp + _size, val);
-					++_size;
-				}
+
+				if (call_constructor)
+					while (_size < n)
+						_alloc.construct(tmp + _size++, val);
+				_size = n;
+				if (_mem)
+					_alloc.deallocate(_mem, _capacity);
 				_capacity = n * 2;
 				_mem = tmp;
 			}
@@ -659,8 +663,8 @@ namespace ft
 			if (new_cap > _capacity)
 			{
 				value_type *tmp;
-				_alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
-				this->_mem; // <- tableau actuelle [45, 21, 78]
+				this->_mem = _alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
+				// <- tableau actuelle [45, 21, 78]this->_mem;
 				size_type i(0);
 				while ( i < _capacity)
 				{

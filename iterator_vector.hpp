@@ -147,6 +147,7 @@ namespace ft
 		typedef typename ft::iterator_traits<T>::difference_type 	difference_type; //alias
 		typedef typename ft::iterator_traits<T>::reference			reference;
 		typedef typename ft::iterator_traits<T>::const_reference	const_reference;
+		//missing typedef for: value_type pointer
 		
 		iterator_vector(T p)    //constructeur iterator en copie 
 			: _pointer(p)
@@ -162,6 +163,19 @@ namespace ft
 		{
 			iterator_vector it(*this);
 			++_pointer;
+			return it;
+		}
+
+		iterator_vector<T> &operator--()  //operator necessaire insert   //inverse pour reverse iterator 
+		{
+			-_pointer;
+			return *this;
+		}
+
+		iterator_vector<T> operator--(int)
+		{
+			iterator_vector it(*this);
+			--_pointer;
 			return it;
 		}
 
