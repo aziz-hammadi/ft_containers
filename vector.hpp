@@ -49,23 +49,24 @@ namespace ft
 			//std::cout << "constructeur" << std::endl;
 		}
 
-		vector (size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
-			: _mem(NULL), _alloc(alloc)
+		vector (const size_type &n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
+			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
 			this->assign(n, val);
 		}
 
 		template <class InputIterator>
 		vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type &alloc = allocator_type())
-			: _mem(NULL), _alloc(alloc)
+			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
 			this->assign(first, last);
 		}
 	
 		//constructeur par copy 
-		vector(const ft::vector<T>& x)
+		vector(const ft::vector<T, allocator_type>& x)
+			: _mem(NULL), _size(0), _capacity(0), _alloc(x.get_allocator())
 		{
-			assign(x.begin(), x.end());
+			this->assign(x.begin(), x.end());
 		}
 
 		//ici destructeur
@@ -94,6 +95,7 @@ namespace ft
 		{
 			//ajoute n fois la val
 			this->resize(n);
+
 			for (size_type i = 0; i < n; ++i)
 			{
 				_alloc.construct(_mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
@@ -105,7 +107,10 @@ namespace ft
 		assign (InputIterator first, InputIterator last) //sur le type de retour
 		{
 				//ajoute un first et un last a la fin
-			this->resize(last - first); // -> [0, 0, 0, 0, 0] _mem de taille _size, allocation, mais valeur non initialisé
+			size_type i = 0;
+			for (InputIterator it = first; it != last; ++it)
+				++i;
+			this->resize(i); // -> [0, 0, 0, 0, 0] _mem de taille _size, allocation, mais valeur non initialisé
 			for (size_t i = 0; first != last; ++i, ++first)
 			{
 				_alloc.construct(_mem + i, *first); // initialise (construit) chaque élement on associe une valeur		
@@ -285,7 +290,7 @@ namespace ft
 				--it;
 			}
 			//insertion de element
-			_alloc.construct(it.pointer(), val);
+			_alloc.construct(it.get_pointer(), val);
 
 		}
 		*/
@@ -333,7 +338,7 @@ namespace ft
 
 			while (n > 0)
 			{
-				_alloc.construct(it.pointer(), val);
+				_alloc.construct(it.get_pointer(), val);
 				--n;
 				--it;
 			}
@@ -375,14 +380,14 @@ namespace ft
 			iterator it = this->end() - 1;
 			while(it > (new_position + (n - 1)))
 			{
-				*it = it - n;
+				*it = *(it - n);
 				--it;
 			}
 
 			size_type i = 0;
 			while (i < n)
 			{
-				_alloc.construct((it - n + i).pointer(), first);
+				_alloc.construct((it - n + i).get_pointer(), *first);
 				++i;
 				// --it;
 				++first;
@@ -390,7 +395,7 @@ namespace ft
 		}
 			// while (n > 0)
 			// {
-			// 	_alloc.construct(it.pointer(), last);
+			// 	_alloc.construct(it.get_pointer(), last);
 			// 	--n;
 			// 	--it;
 			// 	--last;
@@ -470,7 +475,7 @@ namespace ft
 			iterator it = first;
 			while (first < last)
 			{
-				_alloc.destroy(first.pointer());
+				_alloc.destroy(first.get_pointer());
 				++first;
 			}
 			// last -> end()
@@ -508,7 +513,7 @@ namespace ft
 */
 		void		pop_back()
 		{
-			_alloc.destroy((this->end() - 1).pointer());
+			_alloc.destroy((this->end() - 1).get_pointer());
 			--_size;
 		}
 		//
@@ -660,17 +665,20 @@ namespace ft
 			// nouveau allocate -> [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			// _mem -> 
 
-			if (new_cap > _capacity)
+			if (new_cap > this->_capacity)
 			{
-				value_type *tmp;
-				this->_mem = _alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
+				value_type *tmp = _alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
 				// <- tableau actuelle [45, 21, 78]this->_mem;
 				size_type i(0);
-				while ( i < _capacity)
+				while (i < this->_size)
 				{
-					tmp[i] = _mem[i];
+					_alloc.construct(tmp + i, this->_mem[i]);
+					_alloc.destroy(this->_mem + i);
 					i++;
 				}
+				_alloc.deallocate(this->_mem, _capacity);
+				this->_mem = tmp;
+				this->_capacity = new_cap;
 			}
 		}
 		// new_cap > _capacity
@@ -688,6 +696,13 @@ namespace ft
 		const_reference operator[](const size_type &n) const
 		{
 			return (_mem[n]);
+		}
+
+		ft::vector<T, allocator_type> &operator=(const ft::vector<T, allocator_type> &vec)
+		{
+			this->_alloc = vec.get_allocator();
+			this->assign(vec.begin(), vec.end());
+			return *this;
 		}
 
 	private:

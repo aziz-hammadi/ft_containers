@@ -74,6 +74,8 @@
         "mutex": "cpp",
         "ratio": "cpp",
         "__functional_base_03": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp"
     }
 }

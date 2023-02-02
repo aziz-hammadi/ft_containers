@@ -89,6 +89,7 @@ namespace ft
 			current += n;
 			return *this;
 		}
+
 		pointer operator->() const
 		{
 			return &(operator*());
@@ -147,10 +148,23 @@ namespace ft
 		typedef typename ft::iterator_traits<T>::difference_type 	difference_type; //alias
 		typedef typename ft::iterator_traits<T>::reference			reference;
 		typedef typename ft::iterator_traits<T>::const_reference	const_reference;
+		typedef typename ft::iterator_traits<T>::value_type			value_type;
+		typedef typename ft::iterator_traits<T>::pointer			pointer;
+		typedef typename ft::iterator_traits<T>::iterator_category	iterator_category;
+
 		//missing typedef for: value_type pointer
 		
-		iterator_vector(T p)    //constructeur iterator en copie 
+		iterator_vector()
+			: _pointer()
+		{}
+
+		explicit iterator_vector(const T &p)    //constructeur iterator en copie 
 			: _pointer(p)
+		{}
+
+		template <typename Itr>
+		iterator_vector(const iterator_vector<Itr> &it)
+			: _pointer(it.get_pointer())
 		{}
 
 		iterator_vector<T> &operator++()  //operator necessaire insert   //inverse pour reverse iterator 
@@ -168,7 +182,7 @@ namespace ft
 
 		iterator_vector<T> &operator--()  //operator necessaire insert   //inverse pour reverse iterator 
 		{
-			-_pointer;
+			--_pointer;
 			return *this;
 		}
 
@@ -236,10 +250,37 @@ namespace ft
 			return *this->_pointer; //dereferencer le pointeur
 		}
 
-		T pointer()
+		T *operator->()
+		{
+			return &this->_pointer;
+		}
+
+		const T *operator->() const
+		{
+			return &this->_pointer;
+		}
+
+		reference operator[](const std::ptrdiff_t &n)
+		{
+			return this->_pointer[n];
+		}
+
+		const_reference operator[](const std::ptrdiff_t &n) const
+		{
+			return this->_pointer[n];
+		}
+
+		T get_pointer()
 		{
 			return (_pointer);
 		}
+
+		const T get_pointer() const
+		{
+			return (_pointer);
+		}
+
+		
 
 	private :
 		T	_pointer;
