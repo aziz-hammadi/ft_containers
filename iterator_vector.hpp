@@ -197,45 +197,45 @@ namespace ft
 		//!(a._pointer < b._pointer || a._pointer > b._pointer)  ->    a._pointer == b._pointer
 
 
-		bool operator==(const iterator_vector<T> &b)
+		bool operator==(const iterator_vector<T> &b) const
 		{
 			//return (!(this->_pointer < b._pointer || this->_pointer > b._pointer));
 			// return (a._pointer == b._pointer);
 			return !(this->operator<(b) || this->operator>(b));
 		}
-		bool operator!=(const iterator_vector<T> &b)
+		bool operator!=(const iterator_vector<T> &b) const
 		{
 			//return (a._pointer != b._pointer);
 			return !(this->operator==(b));
 		}
-		bool operator>(const iterator_vector<T> &b)
+		bool operator>(const iterator_vector<T> &b) const
 		{
 			return (this->_pointer > b._pointer);
 		}
-		bool operator<(const iterator_vector<T> &b)
+		bool operator<(const iterator_vector<T> &b) const
 		{
 			return (this->_pointer < b._pointer);
 		}
-		bool operator>=(const iterator_vector<T> &b)
+		bool operator>=(const iterator_vector<T> &b) const
 		{
 			return !(this->operator<(b));
 		}
-		bool operator<=(const iterator_vector<T> &b)
+		bool operator<=(const iterator_vector<T> &b) const
 		{
 			return !(this->operator>=(b));
 		}
 
-		difference_type operator-(const iterator_vector<T> &b)
+		difference_type operator-(const iterator_vector<T> &b) const
 		{
 			return this->_pointer - b._pointer;
 		}
 
-		iterator_vector<T> operator+(const difference_type &b)
+		iterator_vector<T> operator+(const difference_type &b) const
 		{
 			return iterator_vector<T>(this->_pointer + b);
 		}
 
-		iterator_vector<T> operator-(const difference_type &b)
+		iterator_vector<T> operator-(const difference_type &b) const
 		{
 			return iterator_vector<T>(this->_pointer - b);
 		}

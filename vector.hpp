@@ -46,12 +46,14 @@ namespace ft
 		vector(const allocator_type &alloc = allocator_type())
 			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
-			//std::cout << "constructeur" << std::endl;
+			//std::cout << "CTOR: " << this << " " << std::endl;
+			////std::cout << "constructeur" << std::endl;
 		}
 
 		vector (const size_type &n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
 			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
+			//std::cout << "CTOR: " << this << " " << std::endl;
 			this->assign(n, val);
 		}
 
@@ -59,6 +61,7 @@ namespace ft
 		vector(InputIterator first, typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last, const allocator_type &alloc = allocator_type())
 			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
+			//std::cout << "CTOR: " << this << " " << std::endl;
 			this->assign(first, last);
 		}
 	
@@ -66,6 +69,7 @@ namespace ft
 		vector(const ft::vector<T, allocator_type>& x)
 			: _mem(NULL), _size(0), _capacity(0), _alloc(x.get_allocator())
 		{
+			//std::cout << "CTOR: " << this << " " << std::endl;
 			this->assign(x.begin(), x.end());
 		}
 
@@ -74,7 +78,10 @@ namespace ft
 		{
 			clear();
 			if (_mem != NULL)
+			{
+				//std::cout << "DEALLOC dtor: " << this << " " << _mem << std::endl;
 				_alloc.deallocate(_mem, _capacity);
+			}
 			//deallocate _mem[]
 		}
 
@@ -384,10 +391,17 @@ namespace ft
 				--it;
 			}
 
+			/*
+			[4, 5, 6, 7]
+			insert 1, 2 au debut ----> [1, 2, 4, 5, 6, 7]
+			[1, 2, 4, 5, 6, 7]
+			*/
+
 			size_type i = 0;
 			while (i < n)
 			{
-				_alloc.construct((it - n + i).get_pointer(), *first);
+				// _alloc.construct((it - (n - 1) + i).get_pointer(), *first);
+				_alloc.construct((new_position + i).get_pointer(), *first);
 				++i;
 				// --it;
 				++first;
@@ -469,12 +483,14 @@ namespace ft
 
 		iterator	erase(iterator first, iterator last)
 		{
-			// [4, 5, 6, 7, 8, 9]
+			// [4, 7, 8, 9, 8, 9]
 			// erase(this->begin() + 1, this->begin() + 3)
 			// [4, 8, 9]
+			iterator tmp_first = first;
 			iterator it = first;
 			while (first < last)
 			{
+				--_size;
 				_alloc.destroy(first.get_pointer());
 				++first;
 			}
@@ -486,6 +502,7 @@ namespace ft
 				*it = *(last++);
 				++it;
 			}
+			return tmp_first;
 		}
 /*AZERTYUIO
 
@@ -624,7 +641,10 @@ namespace ft
 						_alloc.construct(tmp + _size++, val);
 				_size = n;
 				if (_mem)
+				{
+					//std::cout << "DEALLOC impl resize: " << this << " " << _mem << std::endl;
 					_alloc.deallocate(_mem, _capacity);
+				}
 				_capacity = n * 2;
 				_mem = tmp;
 			}

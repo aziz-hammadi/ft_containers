@@ -39,7 +39,7 @@ struct Hello<false>
 */
 //#include "./containers_test/srcs/vector/common.hpp"
 #include <list>
-#define TESTED_TYPE int
+#define TESTED_TYPE std::string
 #include "common.hpp"
 #include "vector.hpp"
 // template <typename T>
@@ -47,35 +47,52 @@ struct Hello<false>
 // {
 //     typedef T type;
 // };
-
+void	checkErase(TESTED_NAMESPACE::vector<TESTED_TYPE> const &vct,
+					TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator const &it)
+{
+	static int i = 0;
+	std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
+	printSize(vct);
+}
 
 int		main(void)
 {
-	ft::vector<int> vec(5);
-	for (size_t i = 0; i < vec)
-	// vec.insert(vec.begin(), )
-	return 0;
-    // TESTED_NAMESPACE::vector<TESTED_TYPE> vct(5);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
-	// const int cut = 3;
+	std::vector<std::string> stdvec(10);
+	ft::vector<std::string> ftvec(10);
+
+	ftvec.erase(ftvec.begin());
+	stdvec.erase(stdvec.begin());
+	std::cout << "ft: " << ftvec.size() << std::endl;
+	std::cout << "std: " << stdvec.size() << std::endl;
+
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(10);
 
 	// for (unsigned long int i = 0; i < vct.size(); ++i)
-	// 	vct[i] = (vct.size() - i) * 7;
+	// 	vct[i] = std::string((vct.size() - i), i + 65);
 	// printSize(vct);
+	return 0;
 
-	// vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
-	// printSize(vct2);
-	// vct2.insert(vct2.begin(), vct.begin() + cut, vct.end());
-	// printSize(vct2);
-	// vct2.insert(vct2.end(), vct.begin(), vct.begin() + cut);
-	// printSize(vct2);
 
-	// std::cout << "insert return:" << std::endl;
 
-	// std::cout << *vct2.insert(vct2.end(), 42) << std::endl;
-	// std::cout << *vct2.insert(vct2.begin() + 5, 84) << std::endl;
-	// std::cout << "----------------------------------------" << std::endl;
+	checkErase(vct, vct.erase(vct.begin() + 2));
 
-	// printSize(vct2);
+	checkErase(vct, vct.erase(vct.begin()));
+	checkErase(vct, vct.erase(vct.end() - 1));
+
+	checkErase(vct, vct.erase(vct.begin(), vct.begin() + 3));
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end() - 1));
+
+	vct.push_back("Hello");
+	vct.push_back("Hi there");
+	printSize(vct);
+	checkErase(vct, vct.erase(vct.end() - 3, vct.end()));
+
+	vct.push_back("ONE");
+	vct.push_back("TWO");
+	vct.push_back("THREE");
+	vct.push_back("FOUR");
+	printSize(vct);
+	checkErase(vct, vct.erase(vct.begin(), vct.end()));
+
 	return (0);
 }
