@@ -472,6 +472,7 @@ namespace ft
 
 		iterator	erase(iterator position)
 		{
+			//if ((position >= this->begin()) && ((position + 1) < this->end()) )
 			return (erase(position, position + 1));
 			/*copie de tmp [begin, positon - 1];
 			destroy _mem[position] 
@@ -488,22 +489,26 @@ namespace ft
 			// [4, 8, 9]
 			iterator tmp_first = first;
 			iterator it = first;
+			size_type tmp_size = _size;
 			while (first < last)
 			{
-				--_size;
+				--tmp_size;
 				_alloc.destroy(first.get_pointer());
 				++first;
 			}
 			// last -> end()
 			// *first = last
 			// ++last -> end()
+			// it = first;
 			while (last < end())
 			{
 				*it = *(last++);
 				++it;
 			}
+			_size = tmp_size;
 			return tmp_first;
 		}
+
 /*AZERTYUIO
 
 		iterator	erase(iterator first, iterator last) //last pas compris	
