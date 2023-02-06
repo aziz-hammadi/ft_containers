@@ -196,31 +196,36 @@ namespace ft
 		//== a, b
 		//!(a._pointer < b._pointer || a._pointer > b._pointer)  ->    a._pointer == b._pointer
 
-
-		bool operator==(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator==(const iterator_vector<P> &b) const
 		{
 			//return (!(this->_pointer < b._pointer || this->_pointer > b._pointer));
 			// return (a._pointer == b._pointer);
 			return !(this->operator<(b) || this->operator>(b));
 		}
-		bool operator!=(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator!=(const iterator_vector<P> &b) const
 		{
 			//return (a._pointer != b._pointer);
 			return !(this->operator==(b));
 		}
-		bool operator>(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator>(const iterator_vector<P> &b) const
 		{
-			return (this->_pointer > b._pointer);
+			return (this->get_pointer() > b.get_pointer());
 		}
-		bool operator<(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator<(const iterator_vector<P> &b) const
 		{
-			return (this->_pointer < b._pointer);
+			return (this->get_pointer() < b.get_pointer());
 		}
-		bool operator>=(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator>=(const iterator_vector<P> &b) const
 		{
 			return !(this->operator<(b));
 		}
-		bool operator<=(const iterator_vector<T> &b) const
+		template< class P >
+		bool operator<=(const iterator_vector<P> &b) const
 		{
 			return !(this->operator>=(b));
 		}
@@ -250,14 +255,14 @@ namespace ft
 			return *this->_pointer; //dereferencer le pointeur
 		}
 
-		T *operator->()
+		T operator->()
 		{
-			return &this->_pointer;
+			return this->_pointer;
 		}
 
-		const T *operator->() const
+		const T operator->() const
 		{
-			return &this->_pointer;
+			return this->_pointer;
 		}
 
 		reference operator[](const std::ptrdiff_t &n)
