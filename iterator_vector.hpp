@@ -198,51 +198,54 @@ namespace ft
 
 		template< class P >
 		bool operator==(const iterator_vector<P> &b) const
-		{
-			//return (!(this->_pointer < b._pointer || this->_pointer > b._pointer));
-			// return (a._pointer == b._pointer);
-			return !(this->operator<(b) || this->operator>(b));
-		}
+		{ return !(this->operator<(b) || this->operator>(b)); }
+
 		template< class P >
 		bool operator!=(const iterator_vector<P> &b) const
-		{
-			//return (a._pointer != b._pointer);
-			return !(this->operator==(b));
-		}
+		{ return !(this->operator==(b)); }
+
 		template< class P >
 		bool operator>(const iterator_vector<P> &b) const
-		{
-			return (this->get_pointer() > b.get_pointer());
-		}
+		{ return (this->get_pointer() > b.get_pointer()); }
+
 		template< class P >
 		bool operator<(const iterator_vector<P> &b) const
-		{
-			return (this->get_pointer() < b.get_pointer());
-		}
+		{ return (this->get_pointer() < b.get_pointer()); }
+
 		template< class P >
 		bool operator>=(const iterator_vector<P> &b) const
-		{
-			return !(this->operator<(b));
-		}
+		{ return !(this->operator<(b)); }
+
 		template< class P >
 		bool operator<=(const iterator_vector<P> &b) const
+		{ return !(this->operator>(b)); }
+
+		template <typename Itr, typename Itr2>
+		friend difference_type operator-(const iterator_vector<Itr> &a, const iterator_vector<Itr2> &b)
+		{ return a._pointer - b._pointer; }
+
+		friend iterator_vector<T> operator+(const iterator_vector<T> &a, const difference_type &b)
+		{ return iterator_vector<T>(a._pointer + b); }
+
+		friend iterator_vector<T> operator-(const iterator_vector<T> &a, const difference_type &b)
+		{ return iterator_vector<T>(a._pointer - b); }
+
+		friend iterator_vector<T> operator+(const difference_type &a, const iterator_vector<T> &b)
+		{ return iterator_vector<T>(a + b._pointer); }
+
+		friend iterator_vector<T> operator-(const difference_type &a, const iterator_vector<T> &b)
+		{ return iterator_vector<T>(a - b._pointer); }
+
+		iterator_vector<T> &operator+=(const difference_type &b)
 		{
-			return !(this->operator>=(b));
+			this->_pointer += b;
+			return *this;
 		}
 
-		difference_type operator-(const iterator_vector<T> &b) const
+		iterator_vector<T> &operator-=(const difference_type &b)
 		{
-			return this->_pointer - b._pointer;
-		}
-
-		iterator_vector<T> operator+(const difference_type &b) const
-		{
-			return iterator_vector<T>(this->_pointer + b);
-		}
-
-		iterator_vector<T> operator-(const difference_type &b) const
-		{
-			return iterator_vector<T>(this->_pointer - b);
+			this->_pointer -= b;
+			return *this;
 		}
 
 		reference operator*()

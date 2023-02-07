@@ -36,8 +36,8 @@ namespace ft
 		typedef ft::iterator_vector<const T *>	const_iterator;
 		typedef	typename	Alloc::reference reference;
 		typedef	typename	Alloc::const_reference const_reference;
-		typedef	typename	ft::reverse_iterator<iterator> reverse_iterator;
-		typedef	typename	ft::reverse_iterator<const_iterator> const_reverse_iterator;
+		typedef	typename	ft::reverse_iterator<T *> reverse_iterator;
+		typedef	typename	ft::reverse_iterator<const T *> const_reverse_iterator;
 		typedef	Alloc							allocator_type; //pas besoin de typemane car on essai pas d'acceder a qqchose qui dépend d'un template
 		typedef	std::size_t						size_type;
 		typedef	typename Alloc::pointer			pointer;
@@ -156,12 +156,12 @@ namespace ft
 
 		reverse_iterator	rend()
 		{
-			return (this->begin() - 1);			
+			return (reverse_iterator(*(this->begin() - 1)));			
 		}
 		
 		const_reverse_iterator	rend() const
 		{
-			return (this->begin() - 1);
+			return (const_reverse_iterator(*(this->begin() - 1)));
 		}
 
 						/*//:::::::::::ELEMENT ACCESS:::::::::::\\*/
@@ -729,7 +729,20 @@ namespace ft
 			this->assign(vec.begin(), vec.end());
 			return *this;
 		}
+/*
+		bool operator==(const ft::vector<T> & b)
+		{
+			if (this->_size != b._size)
+				return false;
+			// ...
+		}
 
+		== 
+
+		<
+
+		>
+*/
 	private:
 		//value_type		*_mem;
 		T				*_mem;
