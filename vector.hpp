@@ -10,6 +10,8 @@
 # include "iterator_vector.hpp"
 # include "enable_if.hpp"
 # include "is_integral.hpp"
+# include "equal.hpp"
+# include "lexicographical.hpp"
 //faire insert et delete max size /OK! (return ) (element acces) front back data (capacity) empty size//OK max_size (modifier)//Ok pop_back//ok void pop_back 
 //element acces, tout element acces 
 //insert c compliquer penser a iterator
@@ -345,7 +347,7 @@ namespace ft
 
 			while (n > 0)
 			{
-				_alloc.construct(it.get_pointer(), val);
+				_alloc.construct(it.base(), val);
 				--n;
 				--it;
 			}
@@ -401,7 +403,7 @@ namespace ft
 			while (i < n)
 			{
 				// _alloc.construct((it - (n - 1) + i).get_pointer(), *first);
-				_alloc.construct((new_position + i).get_pointer(), *first);
+				_alloc.construct((new_position + i).base(), *first);
 				++i;
 				// --it;
 				++first;
@@ -493,7 +495,7 @@ namespace ft
 			while (first < last)
 			{
 				--tmp_size;
-				_alloc.destroy(first.get_pointer());
+				_alloc.destroy(first.base());
 				++first;
 			}
 			// last -> end()
@@ -535,7 +537,7 @@ namespace ft
 */
 		void		pop_back()
 		{
-			_alloc.destroy((this->end() - 1).get_pointer());
+			_alloc.destroy((this->end() - 1).base());
 			--_size;
 		}
 		//
@@ -729,8 +731,31 @@ namespace ft
 			this->assign(vec.begin(), vec.end());
 			return *this;
 		}
-/*
-		bool operator==(const ft::vector<T> & b)
+		
+		bool operator==(const ft::vector<T, allocator_type> & b) const
+		{
+			if (this->_size != b._size)
+				return false;
+			return ft::equal(this->begin(), this->end(), b.begin());
+		}
+
+		bool operator<(const ft::vector<T, allocator_type> &b) const
+		{ return ft::lexicographical_compare(this->begin(), this->end(), b.begin(), b.end()); }
+
+		bool operator>(const ft::vector<T, allocator_type> &b) const
+		{ return ft::lexicographical_compare(b.begin(), b.end(), this->begin(), this->end()); }
+
+		bool operator<=(const ft::vector<T, allocator_type> &b) const
+		{ return !this->operator>(b); }
+
+		bool operator>=(const ft::vector<T, allocator_type> &b) const
+		{ return !this->operator<(b); }
+
+		bool operator!= (const ft::vector<T, allocator_type> &b) const
+		{ return !this->operator==(b); }
+
+		// bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs);
+		/*bool operator==(const ft::vector<T> & b)
 		{
 			if (this->_size != b._size)
 				return false;
