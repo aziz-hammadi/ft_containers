@@ -8,7 +8,7 @@ namespace ft
     {
         //comparaison entre la premiere iteration first1-> last1 et la deuxieme a partir de first2 jusqu a last1
         //retourne true si pas de difference 
-        //retourne false si different
+        //retourne false si different TETE
         while (first1 != last1)
         {
 			if (!(*first1 == *first2))
