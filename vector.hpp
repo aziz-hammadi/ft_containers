@@ -158,12 +158,12 @@ namespace ft
 
 		reverse_iterator	rend()
 		{
-			return (reverse_iterator(*(this->begin() - 1)));			
+			return (reverse_iterator((this->begin() - 1).base()));			
 		}
 		
 		const_reverse_iterator	rend() const
 		{
-			return (const_reverse_iterator(*(this->begin() - 1)));
+			return (const_reverse_iterator((this->begin() - 1).base()));
 		}
 
 						/*//:::::::::::ELEMENT ACCESS:::::::::::\\*/
