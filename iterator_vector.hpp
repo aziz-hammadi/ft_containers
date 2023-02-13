@@ -169,7 +169,13 @@ namespace ft
 			++this->_current;
 			return *this;
 		}
-
+		/*
+		reverse_iterator<T> operator*(int)
+		{
+			reverse_iterator<T> tmp = *(this);
+			*--tmp;
+			return tmp;
+		}*/
 		reverse_iterator<T>& operator-= (const difference_type &n)
 		{
 			this->_current += n;
