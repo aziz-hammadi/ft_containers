@@ -44,29 +44,30 @@ struct Hello<false>
 
 int		main(void)
 {
-	ft::vector<int> vec(10, 1);
-	ft::vector<int>::iterator cit(vec.begin());
-	ft::vector<int>::const_iterator it(cit);
+	const int size = 5;
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(size);
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::iterator it_ = vct.begin();
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it(it_);
 
-	std::cout << "Vallll: " << *it << std::endl;
+	for (int i = 0; i < size; ++i)
+		vct[i] = (i + 1) * 5;
+	printSize(vct);
 
-	// TESTED_NAMESPACE::vector<TESTED_TYPE> vct;
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::iterator it = vct.begin();
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator cit = vct.begin();
+	std::cout << (it_ == it.base()) << std::endl;
+	std::cout << (it_ == (it + 3).base()) << std::endl;
 
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator rit(it);
+	std::cout << *(it.base() + 1) << std::endl;
+	std::cout << *(it - 3) << std::endl;
+	std::cout << *(it - 3).base() << std::endl;
+	it -= 3;
+	std::cout << *it.base() << std::endl;
 
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator crit(rit);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator crit_(it);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator crit_2(cit);
+	std::cout << "TEST OFFSET" << std::endl;
+	std::cout << *(it) << std::endl;
+	std::cout << *(it).base() << std::endl;
+	std::cout << *(it - 0) << std::endl;
+	std::cout << *(it - 0).base() << std::endl;
+	std::cout << *(it - 1).base() << std::endl;
 
-	// /* error expected
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator rit_(crit);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator rit2(cit);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::iterator it2(rit);
-	// TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator cit2(crit);
-	// */
-
-	// std::cout << "OK" << std::endl;
 	return (0);
 }
