@@ -148,22 +148,24 @@ namespace ft
 
 		reverse_iterator	rbegin()
 		{
-			return (this->end() - 1);
+			return (reverse_iterator(this->end()));
 		}
 
 		const_reverse_iterator rbegin() const
 		{
-			return (this->end() - 1);
+			return (reverse_iterator(this->end()));
 		}
 
 		reverse_iterator	rend()
 		{
-			return (reverse_iterator((this->begin() - 1).base()));			
+			// return (reverse_iterator((this->begin() - 1).base()));			
+			return (reverse_iterator(this->begin()));
 		}
 		
 		const_reverse_iterator	rend() const
 		{
-			return (const_reverse_iterator((this->begin() - 1).base()));
+			// return (const_reverse_iterator((this->begin() - 1).base()));
+			return (reverse_iterator(this->begin()));
 		}
 
 						/*//:::::::::::ELEMENT ACCESS:::::::::::\\*/

@@ -41,6 +41,8 @@ namespace ft
 			: _current(it.base())
 		{}
 
+		virtual ~base_iterator_vector() {}
+
 		// template <typename Itr>
 		// base_iterator_vector(const base_iterator_vector<T> &it)
 		// 	: _current(it.base())
@@ -64,10 +66,12 @@ namespace ft
 		virtual const_reference operator[](const std::ptrdiff_t &n) const
 		{ return this->_current[n]; }
 
-		reference operator*()
-		{ return *this->_current; } //dereferencer le pointeur
+		virtual reference operator*()
+		{ 
+			// std::cerr<<"ici operator_*"<<std::endl;
+			return *this->_current; } //dereferencer le pointeur
 
-		const_reference operator*() const
+		virtual const_reference operator*() const
 		{ return *this->_current; } //dereferencer le pointeur
 
 		T operator->()
@@ -311,6 +315,7 @@ namespace ft
 
 		iterator_vector<T> &operator--()  //operator necessaire insert   //inverse pour reverse iterator 
 		{
+			// std::cerr<<"ici_operator--"<< std::endl;
 			--this->_current;
 			return *this;
 		}
@@ -473,10 +478,10 @@ namespace ft
 		// }
 
 		//base
-		// iterator_type base() const
-		// {
-		// 	return(this->_current);
-		// }
+		iterator_type base() const
+		{
+			return(this->_current);
+		}
 
 		//operator overloads
 		// reverse_iterator<T> operator*() const
@@ -493,7 +498,7 @@ namespace ft
 		reverse_iterator(const base_iterator_vector<Itr> &it)
 			: base_iterator_vector<T>(it)
 		{
-			// std::cout << "REVERSE !" << std::endl;
+			// std::cerr << "construc REVERSE !" << std::endl;
 			// this->_current = it.base();
 		}
 
@@ -505,10 +510,10 @@ namespace ft
 
 
 		reference operator[](const std::ptrdiff_t &n)
-		{ return *(this->_current - n); }
+		{ return *(this->_current - n - 1); }
 
 		const_reference operator[](const std::ptrdiff_t &n) const
-		{ return *(this->_current - n); }
+		{ return *(this->_current - n - 1); }
 
 		reverse_iterator<T>  operator+(const difference_type &n) const
 		{
@@ -537,12 +542,14 @@ namespace ft
 		}
 		reverse_iterator<T> operator--(int)
 		{
+			// std::cerr<<"rev_ici_operator--(int)"<< std::endl;
 			reverse_iterator<T> tmp = *this;
 			--(*this);
 			return tmp;
 		}
 		reverse_iterator<T> &operator--()
 		{
+			// std::cerr<<"rev_ici_operator--()"<< std::endl;
 			++this->_current;
 			return *this;
 		}
@@ -559,6 +566,24 @@ namespace ft
 			*--tmp;
 			return tmp;
 		}*/
+
+		virtual reference operator*() const
+		{ 
+			iterator_type tmp = this->_current;
+
+			return *(--tmp);
+
+			// std::cerr<<"ici operator_*"<<std::endl;
+			// return *this->_current;
+		} //dereferencer le pointeur
+
+		// virtual const_reference operator*() const
+		// {
+		// 	iterator_type tmp(this->base());
+
+		// 	return (*(--tmp));
+		// 	// return *this->_current;
+		// } //dereferencer le pointeur
 
 		reverse_iterator<T>& operator-= (const difference_type &n)
 		{
@@ -581,10 +606,10 @@ namespace ft
 		{
 			return (rhs.base() - lhs.base());
 		}
-		// pointer operator->() const
-		// {
-		// 	return &(operator*());
-		// }
+		pointer operator->() const
+		{
+			return &(operator*());
+		}
 		// reference operator[] (difference_type n) const
 		// {
 		// 	return(this->_current[-n - 1]);
