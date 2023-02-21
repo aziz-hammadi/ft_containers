@@ -40,34 +40,47 @@ struct Hello<false>
 //#include "./containers_test/srcs/vector/common.hpp"
 #include "common.hpp"
 
-#define TESTED_TYPE int
+#define TESTED_TYPE foo<int>
 
 int		main(void)
 {
 	const int size = 5;
 	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(size);
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::iterator it_ = vct.begin();
-	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it(it_);
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it(vct.rbegin());
+	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator ite(vct.rend());
 
-	for (int i = 0; i < size; ++i)
-		vct[i] = (i + 1) * 5;
-	printSize(vct);
+	for (int i = 1; it != ite; ++i)
+		*it++ = (i * 7);
+	printSize(vct, 1);
 
-	std::cout << (it_ == it.base()) << std::endl;
-	std::cout << (it_ == (it + 3).base()) << std::endl;
+	it = vct.rbegin();
+	ite = vct.rbegin();
 
-	std::cout << *(it.base() + 1) << std::endl;
-	std::cout << *(it - 3) << std::endl;
-	std::cout << *(it - 3).base() << std::endl;
-	it -= 3;
-	std::cout << *it.base() << std::endl;
+	std::cout << *(++ite) << std::endl;
+	std::cout << *(ite++) << std::endl;
+	std::cout << *ite++ << std::endl;
+	std::cout << *++ite << std::endl;
 
-	std::cout << "TEST OFFSET" << std::endl;
-	std::cout << *(it) << std::endl;
-	std::cout << *(it).base() << std::endl;
-	std::cout << *(it - 0) << std::endl;
-	std::cout << *(it - 0).base() << std::endl;
-	std::cout << *(it - 1).base() << std::endl;
+	it->m();
+	ite->m();
+
+	std::cout << *(++it) << std::endl;
+	std::cout << *(it++) << std::endl;
+	std::cout << *it++ << std::endl;
+	std::cout << *++it << std::endl;
+
+	std::cout << *(--ite) << std::endl;
+	std::cout << *(ite--) << std::endl;
+	std::cout << *--ite << std::endl;
+	std::cout << *ite-- << std::endl;
+
+	(*it).m();
+	(*ite).m();
+
+	std::cout << *(--it) << std::endl;
+	std::cout << *(it--) << std::endl;
+	std::cout << *it-- << std::endl;
+	std::cout << *--it << std::endl;
 
 	return (0);
 }

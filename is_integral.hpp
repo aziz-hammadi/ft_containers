@@ -1,7 +1,6 @@
 #ifndef __IS_INTEGRAL_HPP__
 # define __IS_INTEGRAL_HPP__
-// #include <uchar.h>
-// #include <bits/c++config.h>
+
 namespace ft
 {
     template <class T>
