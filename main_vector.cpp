@@ -38,10 +38,60 @@ struct Hello<false>
 
 */
 //#include "./containers_test/srcs/vector/common.hpp"
-#include "common.hpp"
+//#include "common.hpp"
 
 #define TESTED_TYPE foo<int>
+#include "vector.hpp"
+/*
+int		main(void)
+{
+	ft::vector<int> a(5);
 
+	a.insert(a.begin(), 9, 7);
+	std::cout << "a.size :" << a.size() << std::endl;
+	// std::cout << "a.size :" << a.max_size() << std::endl;
+
+	std::cout << "a.capacity :" << a.capacity()  << std::endl;
+
+	a.resize(3055);
+
+	std::cout << "a.size :" << a.size() << std::endl;
+	std::cout << "a.capacity :" << a.capacity()  << std::endl;
+}
+*/
+int		main(void)
+{
+  std::vector<int>::size_type sz;
+  std::vector<int> bar;
+  std::vector<int> foo;
+  sz = foo.capacity();
+  std::cout << "making foo grow:\n";
+  for (int i=0; i<100; ++i) {
+    foo.push_back(i);
+    if (sz!=foo.capacity()) {
+      sz = foo.capacity();
+      std::cout << "capacity changed: " << sz << '\n';
+    }
+  }
+
+  sz = bar.capacity();
+  bar.reserve(25);   // this is the only difference with foo above
+  std::cout << "making bar grow:\n";
+  	std::cout<<"bar.size_1 :" << bar.size() <<std::endl;
+  	std::cout<<"bar.cap :" << bar.capacity() <<std::endl;
+	  	//std::cout<<"bar.res :" << bar.reserve() <<std::endl;
+
+  for (int i=0; i<100; ++i) {
+    bar.push_back(i);
+	sz = bar.capacity();
+    if (sz!=bar.capacity()) {
+      sz = bar.capacity();
+      std::cout << "capacity changed: " << sz << '\n';
+    }
+  }
+	std::cout<<"bar.size_2 :" << bar.size() <<std::endl;
+}
+/*
 int		main(void)
 {
 	const int size = 5;
@@ -84,3 +134,4 @@ int		main(void)
 
 	return (0);
 }
+*/

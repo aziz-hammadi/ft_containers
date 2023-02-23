@@ -342,7 +342,7 @@ namespace ft
 			}
 			else 
 			{
-				_alloc.construct(_mem + _size, value);
+				_alloc.construct(_mem + _size , value);
 				// _mem[_size] = value;
 			}
 			_size++;
@@ -385,50 +385,6 @@ namespace ft
 			this->impl_resize(n, val, true);
 		}
 
-		void impl_resize(size_type n, const value_type &val, const bool &call_constructor) 
-		{
-			if (n < _size)
-			{
-				size_type i = n;
-				while(i < _size)
-				{
-					_alloc.destroy(_mem + i); //&_mem[i]
-					i++;
-				}
-				_size = n;
-			}
-			else if (n > _size && n < _capacity)
-			{
-				if (call_constructor)
-					while (_size < n)
-						_alloc.construct(_mem + _size++, val);
-				_size = n;
-			}
-			else /* (n > _size) && (n > _capacity)*/
-			{
-				value_type  *tmp;
-				tmp = _alloc.allocate(n * 2); //uniquement n > C
-				size_type i(0);
-				while (i < _size)
-				{
-					_alloc.construct(tmp + i, _mem[i]);
-					_alloc.destroy(_mem + i);
-					++i;
-				}
-
-				if (call_constructor)
-					while (_size < n)
-						_alloc.construct(tmp + _size++, val);
-				_size = n;
-				if (_mem)
-				{
-					//std::cout << "DEALLOC impl resize: " << this << " " << _mem << std::endl;
-					_alloc.deallocate(_mem, _capacity);
-				}
-				_capacity = n * 2;
-				_mem = tmp;
-			}
-		}
 		//retourne la taille max 
 
 		bool		empty() const
@@ -464,22 +420,35 @@ namespace ft
 			// [45, 21, 78, 0, 0, 0, 0, 0, 0, 0]
 			// nouveau allocate -> [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 			// _mem -> 
+			std::cout<< "new_cap :" << new_cap << std::endl;
 
+			if (new_cap > max_size())
+			{
+				std::cout<< "ICI__"<< std::endl;
+				throw std::length_error("ft::vector::reserve");
+			}
 			if (new_cap > this->_capacity)
 			{
 				value_type *tmp = _alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
-				// <- tableau actuelle [45, 21, 78]this->_mem;
-				size_type i(0);
-				while (i < this->_size)
-				{
-					_alloc.construct(tmp + i, this->_mem[i]);
-					_alloc.destroy(this->_mem + i);
-					i++;
-				}
-				_alloc.deallocate(this->_mem, _capacity);
-				this->_mem = tmp;
 				this->_capacity = new_cap;
+				if (!tmp)
+				{
+					throw std::bad_alloc();
+				}
+				// <- tableau actuelle [45, 21, 78]this->_mem;
+				// size_type i(0);
+				// while (i < this->_size)
+				// {
+				// 	_alloc.construct(tmp + i, this->_mem[i]);
+				// 	_alloc.destroy(this->_mem + i);
+				// 	i++;
+				// }
+				// _alloc.deallocate(this->_mem, _capacity);
+				// this->_mem = tmp;
+				// this->_capacity = new_cap;
+
 			}
+
 		}
 		// new_cap > _capacity
 		// reallouer _mem pour qu'il puisse contenir au moins new_cap
@@ -568,7 +537,50 @@ namespace ft
 			}
 			return (posi);
 		}		
+		void	impl_resize(size_type n, const value_type &val, const bool &call_constructor) 
+		{
+			if (n < _size)
+			{
+				size_type i = n;
+				while(i < _size)
+				{
+					_alloc.destroy(_mem + i); //&_mem[i]
+					i++;
+				}
+				_size = n;
+			}
+			else if (n > _size && n < _capacity)
+			{
+				if (call_constructor)
+					while (_size < n)
+						_alloc.construct(_mem + _size++, val);
+				_size = n;
+			}
+			else /* (n > _size) && (n > _capacity)*/
+			{
+				value_type  *tmp;
+				tmp = _alloc.allocate(n * 2); //uniquement n > C
+				size_type i(0);
+				while (i < _size)
+				{
+					_alloc.construct(tmp + i, _mem[i]);
+					_alloc.destroy(_mem + i);
+					++i;
+				}
 
+				if (call_constructor)
+					while (_size < n)
+						_alloc.construct(tmp + _size++, val);
+				_size = n;
+				if (_mem)
+				{
+					//std::cout << "DEALLOC impl resize: " << this << " " << _mem << std::endl;
+					_alloc.deallocate(_mem, _capacity);
+				}
+				_capacity = n;
+				_mem = tmp;
+			}
+		}
 	};
 
 	template <class T, class Alloc>
