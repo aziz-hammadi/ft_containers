@@ -20,7 +20,6 @@ hello()
     // rentrer la pour tout autre type
     std::cout << "T est un autre type" << std::endl;
 }
-
 template <class T>
 typename ft::enable_if<std::is_integral<T>::value || std::is_floating_point<T>::value, void>::type
 hello()
@@ -28,22 +27,18 @@ hello()
     // rentrer dans hello seulement si T est un nombre ===> double, float, int, size_t, long long, unsigned long, ...
     std::cout << "T est un entier ou un nombre a virgule" << std::endl;
 }
-
 template <bool _Cond>
 struct Hello;
-
 template <>
 struct Hello<true>
 {
     typedef int type;
 };
-
 template <>
 struct Hello<false>
 {
     typedef std::string type;
 };
-
 */
 //#include "./containers_test/srcs/vector/common.hpp"
 //#include "common.hpp"
@@ -51,15 +46,12 @@ struct Hello<false>
 //#define TESTED_TYPE foo<int>
 #include "vector.hpp"
 /*#include <sstream>
-
 namespace ft
 {
 	std::string	to_string(size_t n)
 	{
 		std::stringstream tmp;
-
 		tmp << n;
-
 		return tmp.str();
 	}
 }*/
@@ -81,60 +73,48 @@ int	main(void)
 {
 
 
-	/*std::cout << std::endl << "INSERT TESTS" << std::endl;
+	std::cout << std::endl << "INSERT TESTS" << std::endl;
 	std::vector<int> test_std(1, 1);
 	std::vector<int> test2_std(5, 5);
 
-	std::cout << "VECTOR.CAPACITY_1 " << test_std.capacity() <<std::endl;
-	test_std.insert(test_std.begin(), 154, 12);
+	std::cout << "VECTOR.CAPACITY_1" << test_std.capacity() <<std::endl;
+	test_std.insert(test_std.begin(), 200, 12);
 	//print_vector(test_std);
 
-	std::cout << "VECTOR.CAPACITY_2 " << test_std.capacity() <<std::endl;
-	test_std.insert(test_std.begin() + 12, 122, 30);
-	//print_vector(test_std);*/
-
+	std::cout << "VECTOR.CAPACITY_2" << test_std.capacity() <<std::endl;
+	test_std.insert(test_std.begin() + 12, 200, 30);
+	//print_vector(test_std);
 
 
 	std::cout << std::endl << "INSERT TESTS" << std::endl;
 	ft::vector<int> test(1, 1);
 	ft::vector<int> test2(5, 5);
 
-	test.insert(test.begin(), 53, 12);
+	test.insert(test.begin(), 200, 12);
 	print_vector(test);
-	test.insert(test.begin() + 12, 21, 30);
-	print_vector(test);
-	test.insert(test.end(), 12, 50);
-	print_vector(test);
-	test.insert(test.end() - 1, 1, 60);//lui
-	std::cout << "ICI" << std::endl;
-	print_vector(test);
-	test.insert(test.end() - 1, 1, 70);
+	test.insert(test.begin() + 12, 200, 30);
 	print_vector(test);
 	/*test.insert(test.end(), 12, 50);
 	print_vector(test);*/
 
-/*
 
-	std::cout << std::endl << "RESIZE TESTS" << std::endl;
-	ft::vector<int> test(12, 12);
+	// std::cout << std::endl << "RESIZE TESTS" << std::endl;
+	// ft::vector<int> test(12, 12);
 
-	test.resize(72);
-	std::cout << "s1: " << test.size() << ", c1: " << test.capacity() << std::endl;
-	test.resize(100);
-	std::cout << "s2: " << test.size() << ", c2: " << test.capacity() << std::endl;
-
+	// test.resize(72);
+	// std::cout << "s1: " << test.size() << ", c1: " << test.capacity() << std::endl;
+	// test.resize(100);
+	// std::cout << "s2: " << test.size() << ", c2: " << test.capacity() << std::endl;
 
 
 
-	test.resize(4170);
+
+	/*test.resize(4170);
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
 	test.resize(171, 12);
 	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
 	test.resize(62);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-
-
-	*/
+	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;*/
 }
 	
 	// //INSERT RANGE
@@ -316,40 +296,31 @@ int		main(void)
 	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(size);
 	TESTED_NAMESPACE::vector<TESTED_TYPE>::reverse_iterator it(vct.rbegin());
 	TESTED_NAMESPACE::vector<TESTED_TYPE>::const_reverse_iterator ite(vct.rend());
-
 	for (int i = 1; it != ite; ++i)
 		*it++ = (i * 7);
 	printSize(vct, 1);
-
 	it = vct.rbegin();
 	ite = vct.rbegin();
-
 	std::cout << *(++ite) << std::endl;
 	std::cout << *(ite++) << std::endl;
 	std::cout << *ite++ << std::endl;
 	std::cout << *++ite << std::endl;
-
 	it->m();
 	ite->m();
-
 	std::cout << *(++it) << std::endl;
 	std::cout << *(it++) << std::endl;
 	std::cout << *it++ << std::endl;
 	std::cout << *++it << std::endl;
-
 	std::cout << *(--ite) << std::endl;
 	std::cout << *(ite--) << std::endl;
 	std::cout << *--ite << std::endl;
 	std::cout << *ite-- << std::endl;
-
 	(*it).m();
 	(*ite).m();
-
 	std::cout << *(--it) << std::endl;
 	std::cout << *(it--) << std::endl;
 	std::cout << *it-- << std::endl;
 	std::cout << *--it << std::endl;
-
 	return (0);
 }
 */

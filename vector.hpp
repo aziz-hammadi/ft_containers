@@ -48,7 +48,9 @@ namespace ft
 		vector (const size_type &n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type())
 			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
-			//std::cout << "CTOR: " << this << " " << std::endl;
+			//_size = n;
+			//_capacity = _size; 
+			//std::cout << "NSERFF: " << " " << std::endl;
 			this->assign(n, val);
 		}
 		
@@ -57,6 +59,7 @@ namespace ft
 			: _mem(NULL), _size(0), _capacity(0), _alloc(alloc)
 		{
 			//std::cout << "CTOR: " << this << " " << std::endl;
+			//std::cout << "NSERFF_2: " << " " << std::endl;
 			this->assign(first, last);
 		}
 	
@@ -64,7 +67,6 @@ namespace ft
 		vector(const ft::vector<T, allocator_type>& x)
 			: _mem(NULL), _size(0), _capacity(0), _alloc(x.get_allocator())
 		{
-			//std::cout << "CTOR: " << this << " " << std::endl;
 			this->assign(x.begin(), x.end());
 		}
 
@@ -82,15 +84,15 @@ namespace ft
 
 		/* fonction membr
 		*/
-		void assign (size_type n, const value_type& val)
+		void assign (const size_type &n, const value_type& val)
 		{
-			//ajoute n fois la val
-			this->resize(n);
-
+			this->impl_resize(n);
+			//std::cout << "assign_resize" << std::endl;
 			for (size_type i = 0; i < n; ++i)
 			{
 				_alloc.construct(_mem + i, val); //avec constructeur par copie en associant les valeurs a chaque espace 
 			}
+			//std::cout << "assign" << std::endl;
 		}
 		
 		template <class InputIterator>
@@ -101,7 +103,7 @@ namespace ft
 			size_type i = 0;
 			for (InputIterator it = first; it != last; ++it)
 				++i;
-			this->resize(i); // -> [0, 0, 0, 0, 0] _mem de taille _size, allocation, mais valeur non initialisé
+			this->impl_resize(i); // -> [0, 0, 0, 0, 0] _mem de taille _size, allocation, mais valeur non initialisé
 			for (size_t i = 0; first != last; ++i, ++first)
 			{
 				_alloc.construct(_mem + i, *first); // initialise (construit) chaque élement on associe une valeur		
@@ -209,17 +211,20 @@ namespace ft
 			return this->begin() + distance;
 		}
 
+
+		
 		void		insert(iterator position, size_type n, const value_type &val)
 		{
 			// [4, 5, 6, 7, 8]
 			// insert 1, n=2, 3
 			// [4, 5, 6, 7, 8, 3, 3]
-			std::cout << "CAPAC_DEBUT "<< _capacity <<std::endl;
+			//std::cout << "CAPAC_DEBUT "<< _capacity <<std::endl;
 			difference_type distance = position - this->begin();
-			this->impl_resize(_size + n, val, false);
+			//std::cout << "CAPAC_IMPL_RESIZE "<< _capacity <<std::endl;
+			this->impl_resize(_size + n); //_size_actuel + n_insertion
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
-			std::cout << "CAPAC_201 "<< _capacity <<std::endl;
+			//std::cout << "CAPAC_201 "<< _capacity <<std::endl;
 			while (it > (new_position + (n - 1)))
 			{
 				_alloc.construct(it.base(), *(it - (n)));
@@ -233,7 +238,7 @@ namespace ft
 				--n;
 				--it;
 			}
-			std::cout << "CAPAC_402 "<< _capacity <<std::endl;
+			//std::cout << "CAPAC_402 "<< _capacity <<std::endl;
 		}
 
 		template <class InputIterator> 
@@ -245,12 +250,15 @@ namespace ft
 				++n;
 
 			difference_type distance = position - this->begin();
-			this->impl_resize(_size + n, value_type(), false);
+			std::cout << "Before: " << n << " - " << this->_mem << " - " << this->size() << " - " << this->capacity() << std::endl;
+			this->impl_resize(_size + n);
 			iterator new_position = this->begin() + distance;
 			iterator it = this->end() - 1;
+			std::cout << "After: " << n << " - " << this->_mem << " - " << this->size() << " - " << this->capacity() << std::endl;
 			while(it > (new_position + (n - 1)))
 			{
-				_alloc.construct(it.base(), *(it - (n)));
+				std::cout << "Iterating..." << std::endl;
+				_alloc.construct(it.base(), *(it - (n)));//VERIFIER it.base() POINTEUR non allouer ? 
 				_alloc.destroy((it - (n)).base());
 				--it;
 			}
@@ -270,6 +278,7 @@ namespace ft
 				// --it;
 				++first;
 			}
+			//std::cout << "HELLO" << std::endl;
 		}
 						/*//:::::::::::MODIFIER:::::::::::\\*/
 
@@ -287,6 +296,8 @@ namespace ft
 
 		iterator	erase(iterator first, iterator last)
 		{
+			if (first < this->begin() || first > last || last > this->end())
+				return iterator();
 			// [4, 7, 8, 9, 8, 9]
 			// erase(this->begin() + 1, this->begin() + 3)
 			// [4, 8, 9]
@@ -314,12 +325,15 @@ namespace ft
 
 		void		pop_back()
 		{
-			_alloc.destroy((this->end() - 1).base());
-			--_size;
+			if (!this->_size)
+				return;
+			erase(this->end() - 1);
 		}
 		//
 		void		push_back( const T& value)
 		{
+			insert(this->end(), value);
+			return;
 			//- si tu dois allouer 
 			//- tu alloues la mememoire necessaire puis tu desalloues
 			//sinon(tu insert l'element à la fin)
@@ -384,9 +398,9 @@ namespace ft
 			return std::min<size_type>(std::numeric_limits<difference_type>::max(), _alloc.max_size());
 		}
 
-		void resize(size_type n, const value_type &val = value_type())
+		void resize(const size_type &n, const value_type &val = value_type())
 		{
-			this->impl_resize(n, val, true);
+			this->impl_resize(n, val);
 		}
 
 		//retourne la taille max 
@@ -414,25 +428,9 @@ namespace ft
 		//modifie la capacite par la nouvelle capacitie si new cap > _capacity du vector
 		void		reserve(size_type new_cap)
 		{
-			// _alloc.allocate(new_cap) -> nouveau tableau de taille new_cap
-			// _mem -> ancien tableau
-			// push_back 45
-			// push_back 21
-			// push_back 78
-			// [45, 21, 78]
-			// reserve 10
-			// [45, 21, 78, 0, 0, 0, 0, 0, 0, 0]
-			// nouveau allocate -> [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-			// _mem -> 
-			//std::cout<< "new_cap :" << new_cap << std::endl;
-			// std::cout << "_size_1 :" << _size << std::endl; 
-			// std::cout << "_capacity_1 :" << _capacity << std::endl; 
-			// std::cout << "_new_cap_1 :" << new_cap << std::endl; 
+
 			if (new_cap > max_size())
 				throw std::length_error("vector::reserve");
-			// std::cout << "_size_2 :" << _size << std::endl; 
-			// std::cout << "_capacity_2 :" << _capacity << std::endl; 
-			// std::cout << "_new_cap_2 :" << new_cap << std::endl; 
 			if (new_cap > this->_capacity)
 			{
 				value_type *tmp = _alloc.allocate(new_cap); // retourne un nouveau tableau de taille new_cap -> [0, 0, 0, 0, ...]
@@ -458,13 +456,6 @@ namespace ft
 			}
 
 		}
-		// new_cap > _capacity
-		// reallouer _mem pour qu'il puisse contenir au moins new_cap
-		// new_cap < _capacity
-		// on fait rien...
-		//if new_cap < _capacity || new_cap == _capacity = capacity
-		//if new_cap > _capacity then capacity = new cap et réallouer _mem new_cap
-	
 		reference operator[](const size_type &n)
 		{
 			return (_mem[n]);
@@ -544,9 +535,29 @@ namespace ft
 				iterator++;
 			}
 			return (posi);
-		}		
-		void	impl_resize(size_type n, const value_type &val, const bool &call_constructor) 
+		}
+		//if size <  capacity 
+		// size = size et capacity = capacity change
+		//if size >  capacity
+		// size reste a size et capacity = size (n -1)  * 2
+		//max entre size size * 2 et size + N 	
+
+		void	impl_resize(const size_type &n)
 		{
+			/*std::cout << "n "<< n << std::endl;
+			std::cout << "_size "<< _size << std::endl;
+			std::cout << "_capacity "<< _capacity << std::endl;*/
+			// if  n > size -> size * 2
+			/*
+			n			: 413
+			_size		: 401
+			_capacity	: 402
+			size 		: 413, capacity : 804
+			ici n > size (401) && n > capacity (402)
+			resultat size * 2
+			normalement on prend le max entre size et capacity initiale et on double
+			*/  
+			std::cout << "N: " << n << " - " << _size << " - " << _capacity << std::endl;
 			if (n < _size)
 			{
 				size_type i = n;
@@ -556,58 +567,138 @@ namespace ft
 					i++;
 				}
 				_size = n;
+				//std::cout << "CAPAC_555 "<< _capacity <<std::endl;
 			}
+
 			else if (n > _size && n < _capacity)
 			{
-				if (call_constructor)
-					while (_size < n)
-						_alloc.construct(_mem + _size++, val);
+				std::cout << "n > _size && n < _capacity" << std::endl;
 				_size = n;
+				//std::cout << "CAPAC_666 "<< _capacity <<std::endl;
 			}
+			// if  n > size -> size * 2
+			/*
+			n			: 413
+			_size		: 401
+			_capacity	: 402
+			size 		: 413, capacity : 804
+			ici n > size (401) && n > capacity (402)
+			resultat size * 2
+			normalement on prend le max entre size et capacity initiale et on double
+			*/  
 			else // (n > _size) && (n > _capacity)
 			{
-				//std::cout << "_CAPACITY :"<< _capacity<< std::endl;
-				size_type new_cap = this->_capacity * 2;
-				new_cap = n;
-
+				size_type new_cap = this->_size * 2;
+				if (n > new_cap)
+					new_cap = n;
 				value_type *tmp = _alloc.allocate(new_cap); //uniquement n > C
 				// if (!tmp)
 					// throw std::
 				size_type i(0);
+				/*
+				1/ size = size && cap = cap
+				2/ size + n = size && cap = cap * 2 (si n < size)
+				3/ size + n = size && cap = size + n  (si n > size)
+				*/
 				while (i < _size)
 				{
 					//std::cout << "ICI_2"<< std::endl;
-					_alloc.construct(tmp + i, _mem[i]);
+					_alloc.construct(tmp + i, _mem[i]);					
+					
+					//std::cout << "CAPAC_772_else "<< _capacity <<std::endl;
 					_alloc.destroy(_mem + i);
 					++i;
+
 				}
-
-				if (call_constructor)
-					while (_size < n)
-						_alloc.construct(tmp + _size++, val);
-				//if ((n > _capacity) && (n > _size))	
-				//{
-					//std::cout << "ICI_3"<< std::endl;
-				//std::cout << "_CAPACITY_SIZE :"<< _capacity<< std::endl;
 				_size = n;
-				//std::cout << "_CAPACITY_SIZE_2 :"<< _capacity<< std::endl;
-
-				//}
-				// std::cout << "_size" << _size << std::endl;
 				if (_mem)
 				{
 					//std::cout << "DEALLOC impl resize: " << this << " " << _mem << std::endl;
 					_alloc.deallocate(_mem, _capacity);
 				}
-				std::cout << "N " << n << std::endl;
-				if (_capacity == 0)
-					_capacity = n;
-				else if(_capacity < n)
-					_capacity = _capacity * 2;
-				//_capacity = n
-				//std::cout << "_capacity_2 " << _capacity << std::endl;		
+				if (n > _capacity)
+					_capacity = new_cap;
 				_mem = tmp;
-				//std::cout << "_CAPACITY_2 :"<< _capacity<< std::endl;
+			}
+		}
+
+		void	impl_resize(const size_type &n, const value_type &val) 
+		{
+			/*std::cout << "n "<< n << std::endl;
+			std::cout << "_size "<< _size << std::endl;
+			std::cout << "_capacity "<< _capacity << std::endl;*/
+			// if  n > size -> size * 2
+			/*
+		x	 capacity : 804
+			ici n > size (401) && n > capacity (402)
+			resultat size * 2
+			normalement on prend le max entre size et capacity initiale et on double
+			*/  
+			if (n < _size)
+			{
+				size_type i = n;
+				while(i < _size)
+				{
+					_alloc.destroy(_mem + i); //&_mem[i]
+					i++;
+				}
+				_size = n;
+				//std::cout << "CAPAC_555 "<< _capacity <<std::endl;
+			}
+
+			else if (n > _size && n < _capacity)
+			{
+				//-std::cout << "n > _size && n < _capacity" << std::endl;
+				while (_size < n)
+					_alloc.construct(_mem + _size++, val);
+				_size = n;
+				//std::cout << "CAPAC_666 "<< _capacity <<std::endl;
+			}
+			// if  n > size -> size * 2
+			/*
+			n			: 413
+			_size		: 401
+			_capacity	: 402
+			size 		: 413, capacity : 804
+			ici n > size (401) && n > capacity (402)
+			resultat size * 2
+			normalement on prend le max entre size et capacity initiale et on double
+			*/  
+			else // (n > _size) && (n > _capacity)
+			{
+				size_type new_cap = this->_size * 2;
+				if (n > new_cap)
+					new_cap = n;
+				value_type *tmp = _alloc.allocate(new_cap); //uniquement n > C
+				// if (!tmp)
+					// throw std::
+				size_type i(0);
+				/*
+				1/ size = size && cap = cap
+				2/ size + n = size && cap = cap * 2 (si n < size)
+				3/ size + n = size && cap = size + n  (si n > size)
+				*/
+				while (i < _size)
+				{
+					//std::cout << "ICI_2"<< std::endl;
+					_alloc.construct(tmp + i, _mem[i]);					
+					
+					//std::cout << "CAPAC_772_else "<< _capacity <<std::endl;
+					_alloc.destroy(_mem + i);
+					++i;
+
+				}
+				while (_size < n)
+					_alloc.construct(tmp + _size++, val);
+				_size = n;
+				if (_mem)
+				{
+					//std::cout << "DEALLOC impl resize: " << this << " " << _mem << std::endl;
+					_alloc.deallocate(_mem, _capacity);
+				}
+				if (n > _capacity)
+					_capacity = new_cap;
+				_mem = tmp;
 			}
 		}
 	};

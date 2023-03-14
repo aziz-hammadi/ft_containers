@@ -7,18 +7,6 @@
 namespace ft
 {
 	template <class T>
-	struct remove_const { typedef T type; };
-
-	template <class T>
-	struct remove_const<const T> { typedef T type; };
-
-	template <class T>
-	struct is_const { static const bool value = false; };
-
-	template <class T>
-	struct is_const<const T> { static const bool value = true; };
-
-	template <class T>
 	class base_iterator_vector
 	{
 	public:
@@ -291,7 +279,7 @@ namespace ft
 			return *this;
 		}
 
-		virtual reference operator*() const
+		virtual reference operator*()
 		{ 
 			iterator_type tmp = this->_current;
 
