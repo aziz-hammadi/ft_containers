@@ -63,6 +63,9 @@ namespace ft
 		return tmp.str();
 	}
 }*/
+
+/*DEBUT 
+
 void	print_vector(ft::vector<int> &test)
 {
 	typename ft::vector<int>::iterator		beg = test.begin();
@@ -78,63 +81,80 @@ void	print_vector(ft::vector<int> &test)
 }
 
 int	main(void)
+
 {
-
-
-	/*std::cout << std::endl << "INSERT TESTS" << std::endl;
-	std::vector<int> test_std(1, 1);
-	std::vector<int> test2_std(5, 5);
-
-	std::cout << "VECTOR.CAPACITY_1 " << test_std.capacity() <<std::endl;
-	test_std.insert(test_std.begin(), 154, 12);
-	//print_vector(test_std);
-
-	std::cout << "VECTOR.CAPACITY_2 " << test_std.capacity() <<std::endl;
-	test_std.insert(test_std.begin() + 12, 122, 30);
-	//print_vector(test_std);*/
-
-
-
 	std::cout << std::endl << "INSERT TESTS" << std::endl;
-	ft::vector<int> test(1, 1);
-	ft::vector<int> test2(5, 5);
+	vector<int> test(1, 1);
+	vector<int> test2(5, 5);
 
-	test.insert(test.begin(), 53, 12);
+	test.insert(test.begin(), 200, 12);
 	print_vector(test);
-	test.insert(test.begin() + 12, 21, 30);
+	test.insert(test.begin() + 12, 200, 30);
 	print_vector(test);
+	std::cout << "ICI" <<std::endl;
 	test.insert(test.end(), 12, 50);
 	print_vector(test);
-	test.insert(test.end() - 1, 1, 60);//lui
-	std::cout << "ICI" << std::endl;
+	test.insert(test.end() - 1, 0, 60);
 	print_vector(test);
 	test.insert(test.end() - 1, 1, 70);
 	print_vector(test);
-	/*test.insert(test.end(), 12, 50);
-	print_vector(test);*/
+	test.insert(test.begin() + 412, test2.begin(), test2.end());
+	print_vector(test);
+	test.insert(test.begin() + 6, test2.begin(), test2.end());
+	print_vector(test);
+	test.insert(test.end(), test2.begin(), test2.end());
+	print_vector(test);
+}*/
 
-/*
+void	print_vector(ft::vector<int> &test)
+{
+	typename ft::vector<int>::iterator		beg = test.begin();
+	typename ft::vector<int>::iterator		end = test.end();
+	std::cout << "size : " << test.size() << ", capacity : " << test.capacity() << std::endl;
+	for (typename ft::vector<int>::iterator it = beg; it != end; it++)
+	{
+		std::cout << *it << " ";
+		if (((it - beg) % 10 == 9) && it > beg)
+			std::cout << std::endl;
+	}
+	std::cout << std::endl;
+}
 
-	std::cout << std::endl << "RESIZE TESTS" << std::endl;
-	ft::vector<int> test(12, 12);
+struct Obj
+{
+	Obj() {
+		std::cout << "Default ctor" << std::endl;
+	}
 
-	test.resize(72);
-	std::cout << "s1: " << test.size() << ", c1: " << test.capacity() << std::endl;
-	test.resize(100);
-	std::cout << "s2: " << test.size() << ", c2: " << test.capacity() << std::endl;
+	Obj(const Obj &o) {
+		std::cout << "Copy ctor" << std::endl;
+	}
+};
 
+int	main(void)
+{
+	ft::vector<int> vec;
+	vec.pop_back();
 
+	// vec.push_back(o);
+	// vec.assign(1, o);
+	// std::cout << std::endl << "PUSH BACK & POP BACK TESTS" << std::endl;
+	// vector<int> test;
 
-
-	test.resize(4170);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(171, 12);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-	test.resize(62);
-	std::cout << "s: " << test.size() << ", c: " << test.capacity() << std::endl;
-
-
-	*/
+	// std::cout << "Empty ? " << test.empty() << " / Capacity : " << test.capacity() << " / Size : " << test.size() << std::endl;
+	// for (size_t i = 0; i < 51; i++)
+	// {
+	// 	test.push_back(i);
+	// 	std::cout << test.size() << ": " << test.capacity() << " - ";
+	// 	if (!(i % 10) && i != 0)
+	// 		std::cout << std::endl;
+	// }
+	// print_vector(test);
+	// test.pop_back();
+	// test.pop_back();
+	// test.pop_back();
+	// test.pop_back();
+	// print_vector(test);
 }
 	
 	// //INSERT RANGE
